@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lakeside Fulfillment — Monty Supplements</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0d12; --bg2:#111520; --bg3:#171c28; --bg4:#1e2436;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --text:#e8eaf0; --muted:#6b7280;
+  --accent:#3b82f6; --green:#06d6a0; --yellow:#f59e0b;
+  --red:#ef4444; --pink:#f472b6; --lime:#a3e635; --purple:#a78bfa;
+  --font-head:'Syne',sans-serif; --font-mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+
+/* SIDEBAR */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;}
+.logo-area{padding:20px 16px 16px;border-bottom:1px solid var(--border);}
+.logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;}
+.logo-text{font-size:13px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+.client-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;}
+.cbd{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.client-name{font-size:12px;font-weight:700;}
+.client-loc{font-size:10px;color:var(--muted);}
+.nav{padding:12px 8px;flex:1;overflow-y:auto;}
+.nav-section{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:0 8px;margin-bottom:4px;margin-top:12px;}
+.nav-section:first-child{margin-top:0;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;margin-bottom:1px;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:rgba(59,130,246,0.13);color:var(--accent);}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;}
+
+/* MAIN */
+.main{margin-left:220px;padding:22px 26px;min-height:100vh;}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
+.page-title{font-size:20px;font-weight:800;letter-spacing:-0.02em;}
+.page-sub{font-size:11px;color:var(--muted);margin-top:3px;font-family:var(--font-mono);}
+.header-right{display:flex;align-items:center;gap:8px;}
+.btn-icon{width:32px;height:32px;border-radius:8px;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all 0.15s;}
+.btn-icon:hover{color:var(--text);}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 0.7s linear infinite;}
+
+/* DATE BAR */
+.date-bar{display:flex;gap:3px;margin-bottom:18px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:4px;flex-wrap:wrap;}
+.date-btn{padding:6px 12px;border-radius:7px;font-size:11px;font-weight:600;font-family:var(--font-head);color:var(--muted);background:transparent;border:none;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.date-btn:hover{color:var(--text);background:var(--bg3);}
+.date-btn.active{background:var(--accent);color:#fff;}
+
+/* ALERT */
+.alert-banner{display:flex;align-items:center;gap:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;}
+.alert-banner svg{width:14px;height:14px;color:var(--yellow);flex-shrink:0;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:16px;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:15px 15px 13px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.kpi:hover{border-color:var(--border2);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kpi-color,var(--accent));opacity:0.7;}
+.kpi-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.kpi-value{font-size:22px;font-weight:800;letter-spacing:-0.02em;font-family:var(--font-mono);}
+.kpi-sub{font-size:10px;font-weight:500;margin-top:5px;padding:2px 6px;border-radius:4px;font-family:var(--font-mono);display:inline-block;}
+.up{background:rgba(6,214,160,0.1);color:var(--green);}
+.down{background:rgba(239,68,68,0.1);color:var(--red);}
+.flat{background:rgba(107,114,128,0.1);color:var(--muted);}
+.warn{background:rgba(245,158,11,0.1);color:var(--yellow);}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;}
+.card-title{font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;display:flex;align-items:center;gap:7px;}
+.card-dot{width:6px;height:6px;border-radius:50%;}
+.card-meta{font-size:10px;color:var(--muted);font-family:var(--font-mono);}
+.row2{display:grid;grid-template-columns:1fr 290px;gap:13px;margin-bottom:13px;}
+.row3{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:left;padding:0 10px 9px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
+.tbl th:hover{color:var(--text);}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:12px;white-space:nowrap;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--bg3);}
+.tbl .mono{font-family:var(--font-mono);font-size:11px;}
+.order-id{font-family:var(--font-mono);font-size:11px;color:var(--accent);}
+.pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.status-pill{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;}
+.shipped{background:rgba(6,214,160,0.1);color:var(--green);}
+.pending{background:rgba(245,158,11,0.1);color:var(--yellow);}
+.processing{background:rgba(59,130,246,0.1);color:var(--accent);}
+
+/* SEARCH / FILTER BAR */
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.search-box{flex:1;min-width:200px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text);font-family:var(--font-head);outline:none;}
+.search-box::placeholder{color:var(--muted);}
+.search-box:focus{border-color:var(--accent);}
+.filter-select{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text);font-family:var(--font-head);outline:none;cursor:pointer;}
+.filter-select:focus{border-color:var(--accent);}
+
+/* SKU CARDS */
+.sku-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.sku-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden;}
+.sku-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--sku-color);}
+.sku-name{font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:9px;padding-left:6px;}
+.sku-orders{font-size:10px;color:var(--muted);margin-bottom:9px;font-family:var(--font-mono);}
+.sku-row{display:flex;justify-content:space-between;margin-bottom:5px;}
+.sku-row-label{font-size:10px;color:var(--muted);}
+.sku-row-val{font-size:11px;font-weight:600;font-family:var(--font-mono);}
+.sku-total{border-top:1px solid var(--border);margin-top:8px;padding-top:8px;}
+
+/* INVENTORY */
+.inv-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg3);border-radius:8px;margin-bottom:7px;border:1px solid var(--border);}
+.inv-left{display:flex;align-items:center;gap:9px;}
+.inv-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.inv-sku{font-size:11px;font-weight:600;}
+.inv-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.inv-count{font-size:17px;font-weight:800;font-family:var(--font-mono);text-align:right;}
+.inv-units{font-size:10px;color:var(--muted);text-align:right;}
+.inv-alert{font-size:9px;font-weight:700;letter-spacing:0.06em;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-top:2px;display:inline-block;}
+.alert-ok{background:rgba(6,214,160,0.08);color:var(--green);}
+.alert-warn{background:rgba(245,158,11,0.1);color:var(--yellow);}
+.alert-danger{background:rgba(239,68,68,0.1);color:var(--red);}
+
+/* PROGRESS BAR */
+.prog-track{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:4px;}
+.prog-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+
+/* CHANNEL */
+.channel-item{margin-bottom:14px;}
+.channel-top{display:flex;justify-content:space-between;margin-bottom:5px;}
+.channel-name{font-size:12px;font-weight:500;display:flex;align-items:center;gap:7px;}
+.ch-dot{width:7px;height:7px;border-radius:50%;}
+.channel-count{font-size:12px;font-weight:700;font-family:var(--font-mono);}
+.bar-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+.channel-rev{font-size:10px;color:var(--muted);margin-top:3px;font-family:var(--font-mono);}
+
+/* BILLING */
+.billing-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.billing-row:last-child{border-bottom:none;}
+.billing-label{font-size:12px;color:var(--muted);}
+.billing-val{font-size:13px;font-weight:700;font-family:var(--font-mono);}
+.billing-due{color:var(--yellow);font-size:17px;}
+
+/* INVOICE CARD */
+.invoice-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.inv-card-left{display:flex;align-items:center;gap:12px;}
+.inv-card-icon{width:36px;height:36px;border-radius:8px;background:rgba(59,130,246,0.12);display:flex;align-items:center;justify-content:center;}
+.inv-card-icon svg{width:16px;height:16px;color:var(--accent);}
+.inv-card-title{font-size:13px;font-weight:600;}
+.inv-card-sub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--font-mono);}
+.inv-card-amount{text-align:right;}
+.inv-card-val{font-size:15px;font-weight:800;font-family:var(--font-mono);}
+.inv-card-status{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-top:4px;display:inline-block;}
+.paid{background:rgba(6,214,160,0.1);color:var(--green);}
+.unpaid{background:rgba(245,158,11,0.1);color:var(--yellow);}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.stat-box-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stat-box-val{font-size:20px;font-weight:800;font-family:var(--font-mono);}
+.stat-box-sub{font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--font-mono);}
+
+/* SHIPMENT CARD */
+.ship-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;}
+.ship-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.ship-id{font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:500;}
+.ship-date{font-size:11px;color:var(--muted);font-family:var(--font-mono);}
+.ship-meta{display:flex;gap:16px;}
+.ship-meta-item{font-size:11px;color:var(--muted);}
+.ship-meta-item span{color:var(--text);font-weight:600;}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:999;transition:opacity 0.4s;}
+.loading-overlay.hidden{opacity:0;pointer-events:none;}
+.loading-spinner{width:34px;height:34px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+.loading-text{font-size:13px;color:var(--muted);font-family:var(--font-mono);}
+.empty{text-align:center;padding:36px;color:var(--muted);font-size:12px;}
+
+/* PAGE SECTIONS */
+.page-section{display:none;}
+.page-section.active{display:block;}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 0 0;border-top:1px solid var(--border);margin-top:8px;}
+.pagination-info{font-size:11px;color:var(--muted);font-family:var(--font-mono);}
+.pagination-btns{display:flex;gap:4px;}
+.page-btn{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;background:var(--bg3);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-family:var(--font-head);}
+.page-btn:hover{color:var(--text);border-color:var(--border2);}
+.page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.page-btn:disabled{opacity:0.3;cursor:not-allowed;}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">Connecting to your sheet...</div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo-area">
+    <div class="logo-mark">
+      <div class="logo-icon">L</div>
+      <div><div class="logo-text">Lakeside</div><div class="logo-sub">Fulfillment</div></div>
+    </div>
+    <div class="client-badge">
+      <div class="cbd"><div class="dot-live"></div><div class="client-name" id="sidebar-client-name">Loading...</div></div>
+      <div class="client-loc">Austin, TX Warehouse</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="goTo('dashboard',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="goTo('orders',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Orders
+      <span class="nav-badge" id="nav-badge">—</span>
+    </div>
+    <div class="nav-item" onclick="goTo('inventory',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Inventory
+    </div>
+    <div class="nav-item" onclick="goTo('shipments',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/></svg>
+      Shipments
+    </div>
+    <div class="nav-section">Analytics</div>
+    <div class="nav-item" onclick="goTo('reports',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Reports
+    </div>
+    <div class="nav-item" onclick="goTo('billing',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Billing
+    </div>
+    <div class="nav-item" onclick="goTo('sku',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+      SKU Performance
+    </div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item" onclick="goTo('settings',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+      Settings
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══════════════════════════════════════════════ DASHBOARD -->
+<div class="page-section active" id="page-dashboard">
+  <div class="page-header">
+    <div><div class="page-title">Fulfillment Dashboard</div><div class="page-sub" id="last-updated">Connecting...</div></div>
+    <div class="header-right">
+      <div class="btn-icon" onclick="handleRefresh()"><svg id="refresh-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
+    </div>
+  </div>
+  <div class="date-bar" id="db-date-bar">
+    <button class="date-btn" onclick="setRange('today',this,'db')">Today</button>
+    <button class="date-btn" onclick="setRange('yesterday',this,'db')">Yesterday</button>
+    <button class="date-btn" onclick="setRange('7d',this,'db')">7 Days</button>
+    <button class="date-btn" onclick="setRange('14d',this,'db')">14 Days</button>
+    <button class="date-btn active" onclick="setRange('30d',this,'db')">30 Days</button>
+    <button class="date-btn" onclick="setRange('last_month',this,'db')">Last Month</button>
+    <button class="date-btn" onclick="setRange('6m',this,'db')">6 Months</button>
+    <button class="date-btn" onclick="setRange('12m',this,'db')">12 Months</button>
+    <button class="date-btn" onclick="setRange('alltime',this,'db')">All Time</button>
+  </div>
+  <div class="alert-banner" id="alert-banner" style="display:none">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    <span id="alert-text"></span>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi" style="--kpi-color:var(--accent)"><div class="kpi-label">Total Orders</div><div class="kpi-value" id="kpi-orders">—</div><div class="kpi-sub flat">this period</div></div>
+    <div class="kpi" style="--kpi-color:var(--green)"><div class="kpi-label">Units Shipped</div><div class="kpi-value" id="kpi-units">—</div><div class="kpi-sub up">units out</div></div>
+    <div class="kpi" style="--kpi-color:var(--yellow)"><div class="kpi-label">Revenue</div><div class="kpi-value" id="kpi-rev">—</div><div class="kpi-sub up">total charges</div></div>
+    <div class="kpi" style="--kpi-color:var(--purple)"><div class="kpi-label">Avg Rate / Unit</div><div class="kpi-value" id="kpi-avg">—</div><div class="kpi-sub flat">per unit</div></div>
+    <div class="kpi" style="--kpi-color:var(--red)"><div class="kpi-label">Amount Due</div><div class="kpi-value" id="kpi-due">—</div><div class="kpi-sub warn">outstanding</div></div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>SKU Breakdown</div><div class="card-meta" id="sku-meta">this period</div></div>
+      <div class="sku-grid" id="sku-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--green)"></div>Inventory</div><div class="card-meta">live</div></div>
+      <div id="inv-list"></div>
+    </div>
+  </div>
+  <div class="row3">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--pink)"></div>Channel Breakdown</div><div class="card-meta" id="ch-meta">this period</div></div>
+      <div id="channel-breakdown"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--yellow)"></div>Billing Summary</div><div class="card-meta">all time</div></div>
+      <div id="billing-summary"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--green)"></div>Recent Orders</div><div class="card-meta" id="orders-meta">this period</div></div>
+    <table class="tbl"><thead><tr><th>Order ID</th><th>SKU</th><th>Qty</th><th>Channel</th><th>Prep</th><th>Charge</th><th>Date</th><th>Status</th></tr></thead><tbody id="dash-orders-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ORDERS -->
+<div class="page-section" id="page-orders">
+  <div class="page-header">
+    <div><div class="page-title">Orders</div><div class="page-sub" id="orders-count-label">All orders</div></div>
+  </div>
+  <div class="date-bar">
+    <button class="date-btn active" onclick="setRange('today',this,'orders')">Today</button>
+    <button class="date-btn" onclick="setRange('yesterday',this,'orders')">Yesterday</button>
+    <button class="date-btn" onclick="setRange('7d',this,'orders')">7 Days</button>
+    <button class="date-btn" onclick="setRange('14d',this,'orders')">14 Days</button>
+    <button class="date-btn" onclick="setRange('30d',this,'orders')">30 Days</button>
+    <button class="date-btn" onclick="setRange('last_month',this,'orders')">Last Month</button>
+    <button class="date-btn" onclick="setRange('6m',this,'orders')">6 Months</button>
+    <button class="date-btn" onclick="setRange('12m',this,'orders')">12 Months</button>
+    <button class="date-btn" onclick="setRange('alltime',this,'orders')">All Time</button>
+  </div>
+  <div class="filter-bar">
+    <input class="search-box" id="orders-search" placeholder="Search order ID, SKU..." oninput="renderOrdersPage()">
+    <select class="filter-select" id="orders-sku-filter" onchange="renderOrdersPage()"><option value="">All SKUs</option></select>
+    <select class="filter-select" id="orders-channel-filter" onchange="renderOrdersPage()"><option value="">All Channels</option></select>
+    <select class="filter-select" id="orders-prep-filter" onchange="renderOrdersPage()"><option value="">All Prep Types</option></select>
+  </div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr>
+        <th onclick="sortOrders('order_id')">Order ID ↕</th>
+        <th onclick="sortOrders('sku')">SKU ↕</th>
+        <th onclick="sortOrders('qty')">Qty ↕</th>
+        <th onclick="sortOrders('channel')">Channel ↕</th>
+        <th onclick="sortOrders('prep')">Prep Type</th>
+        <th onclick="sortOrders('rate')">Rate/Unit ↕</th>
+        <th onclick="sortOrders('charge')">Grand Total ↕</th>
+        <th onclick="sortOrders('date')">Date ↕</th>
+      </tr></thead>
+      <tbody id="orders-tbody"></tbody>
+    </table>
+    <div class="pagination">
+      <div class="pagination-info" id="orders-page-info"></div>
+      <div class="pagination-btns" id="orders-page-btns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ INVENTORY -->
+<div class="page-section" id="page-inventory">
+  <div class="page-header">
+    <div><div class="page-title">Inventory</div><div class="page-sub">Live stock levels from your sheet</div></div>
+  </div>
+  <div class="stat-row" id="inv-stat-row"></div>
+  <div class="row3">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--green)"></div>Stock by SKU</div><div class="card-meta">live</div></div>
+      <div id="inv-detail-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Units Flow</div><div class="card-meta">all time</div></div>
+      <div id="inv-flow"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--yellow)"></div>Inbound History</div><div class="card-meta">units received per shipment</div></div>
+    <table class="tbl"><thead><tr><th>Date</th><th>SKU</th><th>Units Received</th><th>Notes</th></tr></thead><tbody id="inbound-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SHIPMENTS -->
+<div class="page-section" id="page-shipments">
+  <div class="page-header">
+    <div><div class="page-title">Shipments</div><div class="page-sub">Daily USPS pickup records</div></div>
+  </div>
+  <div class="date-bar">
+    <button class="date-btn active" onclick="setRange('today',this,'shipments')">Today</button>
+    <button class="date-btn" onclick="setRange('yesterday',this,'shipments')">Yesterday</button>
+    <button class="date-btn" onclick="setRange('7d',this,'shipments')">7 Days</button>
+    <button class="date-btn" onclick="setRange('14d',this,'shipments')">14 Days</button>
+    <button class="date-btn" onclick="setRange('30d',this,'shipments')">30 Days</button>
+    <button class="date-btn" onclick="setRange('last_month',this,'shipments')">Last Month</button>
+    <button class="date-btn" onclick="setRange('6m',this,'shipments')">6 Months</button>
+    <button class="date-btn" onclick="setRange('12m',this,'shipments')">12 Months</button>
+    <button class="date-btn" onclick="setRange('alltime',this,'shipments')">All Time</button>
+  </div>
+  <div class="stat-row" id="ship-stat-row"></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Shipment Batches by Day</div><div class="card-meta" id="ship-meta">this period</div></div>
+    <div id="shipments-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ REPORTS -->
+<div class="page-section" id="page-reports">
+  <div class="page-header">
+    <div><div class="page-title">Reports</div><div class="page-sub">Performance analytics</div></div>
+  </div>
+  <div class="date-bar">
+    <button class="date-btn active" onclick="setRange('today',this,'reports')">Today</button>
+    <button class="date-btn" onclick="setRange('yesterday',this,'reports')">Yesterday</button>
+    <button class="date-btn" onclick="setRange('7d',this,'reports')">7 Days</button>
+    <button class="date-btn" onclick="setRange('14d',this,'reports')">14 Days</button>
+    <button class="date-btn" onclick="setRange('30d',this,'reports')">30 Days</button>
+    <button class="date-btn" onclick="setRange('last_month',this,'reports')">Last Month</button>
+    <button class="date-btn" onclick="setRange('6m',this,'reports')">6 Months</button>
+    <button class="date-btn" onclick="setRange('12m',this,'reports')">12 Months</button>
+    <button class="date-btn" onclick="setRange('alltime',this,'reports')">All Time</button>
+  </div>
+  <div class="stat-row" id="reports-stat-row"></div>
+  <div class="row3">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Orders by Day</div></div>
+      <canvas id="daily-chart" height="180"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--pink)"></div>Channel Split</div></div>
+      <canvas id="channel-chart" height="180"></canvas>
+    </div>
+  </div>
+  <div class="row3">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--yellow)"></div>Top SKUs</div></div>
+      <div id="top-skus-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--green)"></div>Prep Type Breakdown</div></div>
+      <div id="prep-breakdown"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ BILLING -->
+<div class="page-section" id="page-billing">
+  <div class="page-header">
+    <div><div class="page-title">Billing</div><div class="page-sub">Charges, payments &amp; balance</div></div>
+  </div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi" style="--kpi-color:var(--green)"><div class="kpi-label">Total Revenue</div><div class="kpi-value" id="bill-total-rev">—</div><div class="kpi-sub flat">all time</div></div>
+    <div class="kpi" style="--kpi-color:var(--accent)"><div class="kpi-label">Total Paid</div><div class="kpi-value" id="bill-paid">—</div><div class="kpi-sub up">collected</div></div>
+    <div class="kpi" style="--kpi-color:var(--yellow)"><div class="kpi-label">Amount Due</div><div class="kpi-value" id="bill-due">—</div><div class="kpi-sub warn">outstanding</div></div>
+    <div class="kpi" style="--kpi-color:var(--purple)"><div class="kpi-label">This Month</div><div class="kpi-value" id="bill-month">—</div><div class="kpi-sub flat">charges</div></div>
+  </div>
+  <div class="row3">
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Billing Breakdown by SKU</div><div class="card-meta">all time</div></div>
+      <table class="tbl"><thead><tr><th>SKU</th><th>Orders</th><th>Units</th><th>Rate/Unit</th><th>Total Charges</th><th>% of Revenue</th></tr></thead><tbody id="billing-sku-tbody"></tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--yellow)"></div>Monthly Summary</div></div>
+    <table class="tbl"><thead><tr><th>Month</th><th>Orders</th><th>Units</th><th>Revenue</th><th>Avg/Order</th></tr></thead><tbody id="billing-monthly-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SKU PERFORMANCE -->
+<div class="page-section" id="page-sku">
+  <div class="page-header">
+    <div><div class="page-title">SKU Performance</div><div class="page-sub">Per-SKU analytics breakdown</div></div>
+  </div>
+  <div class="date-bar">
+    <button class="date-btn active" onclick="setRange('today',this,'sku')">Today</button>
+    <button class="date-btn" onclick="setRange('yesterday',this,'sku')">Yesterday</button>
+    <button class="date-btn" onclick="setRange('7d',this,'sku')">7 Days</button>
+    <button class="date-btn" onclick="setRange('14d',this,'sku')">14 Days</button>
+    <button class="date-btn" onclick="setRange('30d',this,'sku')">30 Days</button>
+    <button class="date-btn" onclick="setRange('last_month',this,'sku')">Last Month</button>
+    <button class="date-btn" onclick="setRange('6m',this,'sku')">6 Months</button>
+    <button class="date-btn" onclick="setRange('12m',this,'sku')">12 Months</button>
+    <button class="date-btn" onclick="setRange('alltime',this,'sku')">All Time</button>
+  </div>
+  <div id="sku-perf-grid" class="sku-grid" style="margin-bottom:16px"></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>SKU Comparison Table</div><div class="card-meta" id="sku-table-meta">this period</div></div>
+    <table class="tbl"><thead><tr><th>SKU</th><th>Orders</th><th>Units</th><th>Revenue</th><th>Rate/Unit</th><th>Misc Cost</th><th>% of Total Orders</th></tr></thead><tbody id="sku-perf-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SETTINGS -->
+<div class="page-section" id="page-settings">
+  <div class="page-header"><div><div class="page-title">Settings</div><div class="page-sub">Dashboard configuration</div></div></div>
+  <div class="card" style="max-width:560px">
+    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Connection</div></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">Your dashboard is connected to Google Sheets. Data refreshes on page load and when you click the refresh button.</div>
+    <div style="background:var(--bg3);border-radius:8px;padding:14px;font-family:var(--font-mono);font-size:11px;color:var(--muted);word-break:break-all">
+      Sheet ID: <span style="color:var(--accent)" id="settings-sheet-id"></span>
+    </div>
+    <div style="margin-top:16px;font-size:12px;color:var(--muted)">Client: <span style="color:var(--text);font-weight:600" id="settings-client-name"></span></div>
+    <div style="margin-top:6px;font-size:12px;color:var(--muted)">Total orders loaded: <span style="color:var(--text);font-weight:600" id="settings-total-orders"></span></div>
+    <div style="margin-top:6px;font-size:12px;color:var(--muted)">Last refreshed: <span style="color:var(--text);font-weight:600" id="settings-last-refresh"></span></div>
+  </div>
+</div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════
+const CONFIG = {
+  clientName: 'Monty Supplements',
+  sheetId: '1iIind4E2EHljYxroGMFXivuzJItFQa4TzjW3SKJaSpo',
+  skuColors: { 'Kids Toxin Detox':'#3b82f6','BREATHEASE':'#06d6a0','Breathease':'#06d6a0','TOXIN STRAWBERRY LEM':'#f59e0b','Toxin Strawberry Lem':'#f59e0b' },
+  skuIcons:  { 'Kids Toxin Detox':'🧒','BREATHEASE':'🫁','Breathease':'🫁','TOXIN STRAWBERRY LEM':'🍓','Toxin Strawberry Lem':'🍓' },
+};
+const SKU_COLORS_FALLBACK = ['#3b82f6','#06d6a0','#f59e0b','#f472b6','#a78bfa','#34d399'];
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let allOrders = [], apiData = {}, stockData = [], inboundData = [];
+let pageRanges = { db:'30d', orders:'30d', shipments:'30d', reports:'30d', sku:'30d' };
+let ordersPage = 1, ordersPerPage = 50, ordersSortKey = 'date', ordersSortDir = -1;
+let charts = {};
+
+// ══════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════
+const fmt = n => Number(n).toLocaleString();
+const fmtM = n => '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDate = d => d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+const skuColor = (name,i) => CONFIG.skuColors[name] || SKU_COLORS_FALLBACK[i%SKU_COLORS_FALLBACK.length];
+
+function getDateRange(range) {
+  const now = new Date(), today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  let start, end;
+  switch(range) {
+    case 'today': start=today; end=new Date(today); end.setDate(end.getDate()+1); break;
+    case 'yesterday': start=new Date(today); start.setDate(start.getDate()-1); end=today; break;
+    case '7d': start=new Date(today); start.setDate(start.getDate()-7); end=new Date(today); end.setDate(end.getDate()+1); break;
+    case '14d': start=new Date(today); start.setDate(start.getDate()-14); end=new Date(today); end.setDate(end.getDate()+1); break;
+    case '30d': start=new Date(today); start.setDate(start.getDate()-30); end=new Date(today); end.setDate(end.getDate()+1); break;
+    case 'last_month': start=new Date(now.getFullYear(),now.getMonth()-1,1); end=new Date(now.getFullYear(),now.getMonth(),1); break;
+    case '6m': start=new Date(today); start.setMonth(start.getMonth()-6); end=new Date(today); end.setDate(end.getDate()+1); break;
+    case '12m': start=new Date(today); start.setMonth(start.getMonth()-12); end=new Date(today); end.setDate(end.getDate()+1); break;
+    default: start=new Date('2000-01-01'); end=new Date('2100-01-01');
+  }
+  return {start,end};
+}
+const rangeLabel = r => ({today:'today',yesterday:'yesterday','7d':'last 7 days','14d':'last 14 days','30d':'last 30 days',last_month:'last month','6m':'last 6 months','12m':'last 12 months',alltime:'all time'}[r]||r);
+function filterByRange(range) {
+  if(range==='alltime') return allOrders;
+  const {start,end}=getDateRange(range);
+  return allOrders.filter(o=>o.date>=start&&o.date<end);
+}
+
+// ══════════════════════════════════════════════════
+// DATA FETCH
+// ══════════════════════════════════════════════════
+// CSV fetch — same method as v1 which worked
+// ══════════════════════════════════════════════════
+// DATA FETCHING
+// ══════════════════════════════════════════════════
+// Netlify Function endpoint — runs server-side, no CORS issues
+async function loadData() {
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('loading-text').textContent = 'Loading dashboard...';
+  try {
+    const res = await fetch('/.netlify/functions/data');
+    if (!res.ok) throw new Error('Server error: ' + res.status);
+    const json = await res.json();
+
+    // API data
+    apiData = json.apiData || {};
+
+    // Stock data
+    stockData = json.stock || [];
+
+    // Inbound data
+    inboundData = json.inbound || [];
+
+    document.getElementById('sidebar-client-name').textContent = CONFIG.clientName;
+    document.getElementById('settings-sheet-id').textContent = CONFIG.sheetId;
+    document.getElementById('settings-client-name').textContent = CONFIG.clientName;
+    document.getElementById('settings-last-refresh').textContent = new Date().toLocaleString();
+    document.getElementById('settings-total-orders').textContent = fmt(apiData.orders_alltime || 0);
+    document.getElementById('nav-badge').textContent = fmt(apiData.orders_30d || 0);
+    document.getElementById('last-updated').textContent =
+      'Last updated: ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+    document.getElementById('loading').classList.add('hidden');
+    renderDashboard();
+    renderBilling();
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('last-updated').textContent = 'Error: ' + e.message;
+    document.getElementById('sidebar-client-name').textContent = CONFIG.clientName;
+    document.getElementById('loading').classList.add('hidden');
+  }
+}
+
+async function loadOrdersForRange(range) { renderDashboard(); }
+
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
+function goTo(page, navEl) {
+  document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  navEl.classList.add('active');
+  if(page==='orders') renderOrdersPage();
+  if(page==='inventory') renderInventory();
+  if(page==='shipments') renderShipments();
+  if(page==='reports') renderReports();
+  if(page==='sku') renderSKUPerf();
+  if(page==='billing') renderBilling();
+}
+
+function setRange(range, btn, ctx) {
+  pageRanges[ctx] = range;
+  btn.closest('.date-bar').querySelectorAll('.date-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if (ctx === 'db')        renderDashboard();
+  if (ctx === 'orders')    { ordersPage=1; renderOrdersPage(); }
+  if (ctx === 'shipments') renderShipments();
+  if (ctx === 'reports')   renderReports();
+  if (ctx === 'sku')       renderSKUPerf();
+}
+
+function handleRefresh(){
+  const icon=document.getElementById('refresh-icon');
+  icon.classList.add('spin');
+  loadData().then(()=>setTimeout(()=>icon.classList.remove('spin'),600));
+}
+
+// ══════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════
+function renderDashboard() {
+  const range=pageRanges.db, label=rangeLabel(range);
+
+  // Pull pre-computed values from API tab based on selected range
+  const rangeMap = {
+    today:      { orders:'orders_today',     revenue:'revenue_today',     units:'units_today' },
+    yesterday:  { orders:'orders_yesterday', revenue:'revenue_yesterday', units:'units_yesterday' },
+    '7d':       { orders:'orders_7d',        revenue:'revenue_7d',        units:'units_7d' },
+    '14d':      { orders:'orders_14d',       revenue:'revenue_14d',       units:'units_14d' },
+    '30d':      { orders:'orders_30d',       revenue:'revenue_30d',       units:'units_30d' },
+    last_month: { orders:'orders_month',     revenue:'revenue_month',     units:'units_shipped' },
+    '6m':       { orders:'orders_alltime',   revenue:'revenue_alltime',   units:'units_shipped' },
+    '12m':      { orders:'orders_alltime',   revenue:'revenue_alltime',   units:'units_shipped' },
+    alltime:    { orders:'orders_alltime',   revenue:'revenue_alltime',   units:'units_alltime' },
+  };
+  const keys = rangeMap[range] || rangeMap['30d'];
+  const totalOrders = apiData[keys.orders] || 0;
+  const totalRev = apiData[keys.revenue] || 0;
+  const totalUnits = apiData[keys.units] || 0;
+  const avgRate = totalUnits > 0 ? totalRev / totalUnits : 0;
+
+  document.getElementById('kpi-orders').textContent=fmt(totalOrders);
+  document.getElementById('kpi-units').textContent=fmt(totalUnits);
+  document.getElementById('kpi-rev').textContent=fmtM(totalRev);
+  document.getElementById('kpi-avg').textContent=fmtM(avgRate);
+  document.getElementById('kpi-due').textContent=fmtM(apiData.amount_due||0);
+  document.getElementById('sku-meta').textContent=label;
+  document.getElementById('ch-meta').textContent=label;
+  document.getElementById('orders-meta').textContent=fmt(totalOrders)+' orders · '+label;
+  document.getElementById('nav-badge').textContent=fmt(totalOrders);
+
+  // Alerts — use API tab keys + stock data
+  const alerts=[];
+  if(stockData.length) {
+    stockData.forEach(s=>{
+      const onHand=parseNum(s.on_hand);
+      const name=s.sku||s.title||'Unknown SKU';
+      if(onHand<=0) alerts.push(name+' out of stock');
+      else if(s.below_reorder_==='YES'||s.below_reorder==='YES') alerts.push(name+' below reorder point ('+fmt(onHand)+' units)');
+    });
+  } else {
+    if((apiData.stock_toxin||0)<=0) alerts.push('Toxin Strawberry Lem out of stock');
+    if((apiData.stock_breatheas||0)<10) alerts.push('Breathease low ('+fmt(apiData.stock_breatheas||0)+' units)');
+  }
+  if((apiData.boxes_left||0)===0) alerts.push('Boxes at warehouse: 0');
+  const ab=document.getElementById('alert-banner');
+  if(alerts.length){ab.style.display='flex';document.getElementById('alert-text').textContent='Action needed: '+alerts.join(' · ');}
+  else ab.style.display='none';
+
+  // SKU grid from pre-computed API tab values
+  const skuData = [
+    { name:'Kids Toxin Detox',    orders:apiData.sku_kids_orders_30d||0,      charges:apiData.sku_kids_revenue_30d||0,      color:'#3b82f6' },
+    { name:'BREATHEASE',          orders:apiData.sku_breathease_orders_30d||0, charges:apiData.sku_breathease_revenue_30d||0, color:'#06d6a0' },
+    { name:'TOXIN STRAWBERRY LEM',orders:apiData.sku_toxin_orders_30d||0,      charges:apiData.sku_toxin_revenue_30d||0,      color:'#f59e0b' },
+  ].filter(s=>s.orders>0);
+  document.getElementById('sku-grid').innerHTML = skuData.length ? skuData.map(s =>
+    `<div class="sku-card" style="--sku-color:${s.color}">
+      <div class="sku-name" style="color:${s.color}">${s.name}</div>
+      <div class="sku-orders">${fmt(s.orders)} orders · last 30 days</div>
+      <div class="sku-row"><span class="sku-row-label">Total Charges</span><span class="sku-row-val">${fmtM(s.charges)}</span></div>
+      <div class="sku-row sku-total"><span class="sku-row-label" style="font-weight:700">Grand Total</span><span class="sku-row-val" style="color:${s.color}">${fmtM(s.charges)}</span></div>
+    </div>`
+  ).join('') : '<div class="empty" style="grid-column:1/-1">No orders in this period</div>';
+
+  // Inventory
+  renderInvList('inv-list');
+
+  // Channel from pre-computed API tab
+  const chData = [
+    { name:'Shopify',      count:apiData.channel_shopify_30d||0, color:'#a3e635' },
+    { name:'TikTok Shop',  count:apiData.channel_tiktok_30d||0,  color:'#f472b6' },
+    { name:'Amazon',       count:apiData.channel_amazon_30d||0,  color:'#f59e0b' },
+  ].filter(c=>c.count>0);
+  const maxCh = Math.max(...chData.map(c=>c.count), 1);
+  document.getElementById('channel-breakdown').innerHTML = chData.length ? chData.map(c => {
+    const pct = Math.round(c.count/maxCh*100);
+    return `<div class="channel-item"><div class="channel-top"><div class="channel-name"><div class="ch-dot" style="background:${c.color}"></div>${c.name}</div><div class="channel-count">${fmt(c.count)}</div></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c.color}"></div></div><div class="channel-rev">last 30 days</div></div>`;
+  }).join('') : '<div class="empty">No data</div>';
+
+  // Billing summary — using API tab keys (same as v1 that worked)
+  document.getElementById('billing-summary').innerHTML=`
+    <div class="billing-row"><span class="billing-label">All-time Revenue</span><span class="billing-val">${fmtM(apiData.revenue_alltime||0)}</span></div>
+    <div class="billing-row"><span class="billing-label">Total Paid</span><span class="billing-val" style="color:var(--green)">${fmtM(apiData.total_paid||0)}</span></div>
+    <div class="billing-row"><span class="billing-label">This Month</span><span class="billing-val">${fmtM(apiData.revenue_month||0)}</span></div>
+    <div class="billing-row"><span class="billing-label">This Week</span><span class="billing-val">${fmtM(apiData.revenue_week||0)}</span></div>
+    <div class="billing-row" style="border-top:1px solid rgba(245,158,11,0.3);margin-top:4px;padding-top:12px">
+      <span class="billing-label" style="font-weight:700;color:var(--text)">Amount Due</span>
+      <span class="billing-val billing-due">${fmtM(apiData.amount_due||0)}</span>
+    </div>`;
+
+  // Recent orders — load on demand from Orders page
+  document.getElementById('dash-orders-tbody').innerHTML =
+    '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted);font-size:12px">Click <b style="color:var(--accent)">Orders</b> in the sidebar to view detailed order data</td></tr>';
+}
+
+function renderSKUCards(orders, targetId) {
+  const skuMap={};
+  orders.forEach(o=>{if(!o.sku)return;if(!skuMap[o.sku])skuMap[o.sku]={orders:0,qty:0,charges:0,misc:0};skuMap[o.sku].orders++;skuMap[o.sku].qty+=o.qty;skuMap[o.sku].charges+=o.charge;skuMap[o.sku].misc+=o.misc;});
+  const skus=Object.entries(skuMap).sort((a,b)=>b[1].orders-a[1].orders);
+  document.getElementById(targetId).innerHTML=skus.length?skus.map(([name,s],i)=>{
+    const col=skuColor(name,i);
+    return `<div class="sku-card" style="--sku-color:${col}"><div class="sku-name" style="color:${col}">${name}</div><div class="sku-orders">${fmt(s.orders)} orders</div><div class="sku-row"><span class="sku-row-label">Qty Out</span><span class="sku-row-val">${fmt(s.qty)}</span></div><div class="sku-row"><span class="sku-row-label">Total Charges</span><span class="sku-row-val">${fmtM(s.charges)}</span></div><div class="sku-row"><span class="sku-row-label">Misc Cost</span><span class="sku-row-val">${fmtM(s.misc)}</span></div><div class="sku-row sku-total"><span class="sku-row-label" style="font-weight:700">Grand Total</span><span class="sku-row-val" style="color:${col}">${fmtM(s.charges)}</span></div></div>`;
+  }).join(''):'<div class="empty" style="grid-column:1/-1">No orders in this period</div>';
+}
+
+function renderInvList(targetId) {
+  if (!stockData.length) { document.getElementById(targetId).innerHTML='<div class="empty">Loading inventory...</div>'; return; }
+  document.getElementById(targetId).innerHTML = stockData.map(item => {
+    const stock = parseNum(item['On Hand']||item.on_hand||item['on_hand']||'0');
+    const threshold = parseNum(item['Reorder Point']||item.reorder_point||'250') || 250;
+    const name = item.SKU||item.sku||item.Title||item.title||'Unknown';
+    const icon = CONFIG.skuIcons[name] || '📦';
+    let ac='alert-ok', at='In Stock';
+    if(stock<=0){ac='alert-danger';at='Out of Stock';}
+    else if(item['Below Reorder?']==='YES'||item.below_reorder_==='YES'||stock<threshold){ac='alert-warn';at='Low Stock';}
+    const col=stock<=0?'var(--red)':stock<threshold?'var(--yellow)':'var(--green)';
+    return `<div class="inv-item"><div class="inv-left"><div class="inv-icon">${icon}</div><div><div class="inv-sku">${name}</div><div class="inv-sub">on hand · reorder @ ${fmt(threshold)}</div><div class="inv-alert ${ac}">${at}</div></div></div><div><div class="inv-count" style="color:${col}">${fmt(stock)}</div><div class="inv-units">units</div></div></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+// ORDERS PAGE
+// ══════════════════════════════════════════════════
+function sortOrders(key) {
+  if(ordersSortKey===key) ordersSortDir*=-1; else{ordersSortKey=key;ordersSortDir=-1;}
+  renderOrdersPage();
+}
+
+function renderOrdersPage() {
+  const range=pageRanges.orders;
+  let orders=filterByRange(range);
+  const search=document.getElementById('orders-search').value.toLowerCase();
+  const skuF=document.getElementById('orders-sku-filter').value;
+  const chF=document.getElementById('orders-channel-filter').value;
+  const prF=document.getElementById('orders-prep-filter').value;
+
+  if(search) orders=orders.filter(o=>(o.order_id+o.sku+o.channel+o.prep).toLowerCase().includes(search));
+  if(skuF) orders=orders.filter(o=>o.sku===skuF);
+  if(chF) orders=orders.filter(o=>o.channel===chF);
+  if(prF) orders=orders.filter(o=>o.prep===prF);
+
+  orders.sort((a,b)=>{
+    let va=a[ordersSortKey],vb=b[ordersSortKey];
+    if(ordersSortKey==='date'){va=va||new Date(0);vb=vb||new Date(0);return ordersSortDir*(va-vb);}
+    if(typeof va==='number') return ordersSortDir*(va-vb);
+    return ordersSortDir*(String(va||'').localeCompare(String(vb||'')));
+  });
+
+  const total=orders.length, pages=Math.ceil(total/ordersPerPage);
+  if(ordersPage>pages) ordersPage=Math.max(1,pages);
+  const slice=orders.slice((ordersPage-1)*ordersPerPage, ordersPage*ordersPerPage);
+
+  document.getElementById('orders-count-label').textContent=fmt(total)+' orders · '+rangeLabel(range);
+
+  document.getElementById('orders-tbody').innerHTML=slice.length?slice.map(o=>{
+    const col=CONFIG.skuColors[o.sku]||'#6b7280';
+    return `<tr><td><span class="order-id">${o.order_id||'—'}</span></td><td><span class="pill" style="background:${col}18;color:${col}">${o.sku||'—'}</span></td><td class="mono">${o.qty}</td><td style="font-size:11px;color:var(--muted)">${o.channel||'—'}</td><td style="font-size:11px;color:var(--muted)">${o.prep||'—'}</td><td class="mono">${fmtM(o.rate)}</td><td class="mono">${fmtM(o.charge)}</td><td class="mono" style="color:var(--muted)">${fmtDate(o.date)}</td></tr>`;
+  }).join(''):'<tr><td colspan="8" class="empty">No orders found</td></tr>';
+
+  document.getElementById('orders-page-info').textContent=`Showing ${(ordersPage-1)*ordersPerPage+1}–${Math.min(ordersPage*ordersPerPage,total)} of ${fmt(total)}`;
+  const btnContainer=document.getElementById('orders-page-btns');
+  btnContainer.innerHTML='';
+  const prevBtn=document.createElement('button');
+  prevBtn.className='page-btn'; prevBtn.textContent='← Prev'; prevBtn.disabled=ordersPage===1;
+  prevBtn.onclick=()=>{ordersPage--;renderOrdersPage();};
+  btnContainer.appendChild(prevBtn);
+  const maxPagesShown=5; let startP=Math.max(1,ordersPage-2), endP=Math.min(pages,startP+maxPagesShown-1);
+  for(let p=startP;p<=endP;p++){const b=document.createElement('button');b.className='page-btn'+(p===ordersPage?' active':'');b.textContent=p;b.onclick=(()=>{const pg=p;return()=>{ordersPage=pg;renderOrdersPage();}})();btnContainer.appendChild(b);}
+  const nextBtn=document.createElement('button');
+  nextBtn.className='page-btn'; nextBtn.textContent='Next →'; nextBtn.disabled=ordersPage>=pages;
+  nextBtn.onclick=()=>{ordersPage++;renderOrdersPage();};
+  btnContainer.appendChild(nextBtn);
+}
+
+// ══════════════════════════════════════════════════
+// INVENTORY PAGE
+// ══════════════════════════════════════════════════
+function renderInventory() {
+  const d=apiData;
+  const totalReceived=apiData.units_received||0;
+  const totalShipped=apiData.units_shipped||0;
+  const onHand=stockData.length ? stockData.reduce((s,r)=>s+parseNum(r.on_hand),0) : (apiData.units_on_hand||0);
+  const boxesUsed=apiData.boxes_used||0;
+  const boxesLeft=apiData.boxes_left||0;
+  document.getElementById('inv-stat-row').innerHTML=`
+    <div class="stat-box"><div class="stat-box-label">Units Received</div><div class="stat-box-val">${fmt(totalReceived)}</div><div class="stat-box-sub">all time inbound</div></div>
+    <div class="stat-box"><div class="stat-box-label">Units Shipped</div><div class="stat-box-val">${fmt(totalShipped)}</div><div class="stat-box-sub">all time outbound</div></div>
+    <div class="stat-box"><div class="stat-box-label">Units On Hand</div><div class="stat-box-val" style="color:var(--green)">${fmt(onHand)}</div><div class="stat-box-sub">current stock</div></div>
+    <div class="stat-box"><div class="stat-box-label">Boxes Left</div><div class="stat-box-val" style="color:${boxesLeft===0?'var(--red)':'var(--text)'}">${fmt(boxesLeft)}</div><div class="stat-box-sub">${fmt(boxesUsed)} used all time</div></div>`;
+
+  // Detailed inv list from Stock tab
+  const maxStock=Math.max(...stockData.map(s=>parseNum(s.on_hand)),1);
+  document.getElementById('inv-detail-list').innerHTML=stockData.length?stockData.map((item,i)=>{
+    const stock=parseNum(item.on_hand);
+    const threshold=parseNum(item.reorder_point)||250;
+    const name=item.sku||item.title||'Unknown'; // SKU col = full name
+    const icon=CONFIG.skuIcons[name]||'📦';
+    let ac='alert-ok',at='In Stock';
+    if(stock<=0){ac='alert-danger';at='Out of Stock';}
+    else if(item.below_reorder_==='YES'||stock<threshold){ac='alert-warn';at='Low Stock';}
+    const col=stock<=0?'var(--red)':stock<threshold?'var(--yellow)':'var(--green)';
+    const pct=Math.round(Math.max(stock,0)/maxStock*100);
+    const l7=parseNum(item.last_7_days_out);
+    const l30=parseNum(item.last_30_days_out);
+    return `<div style="margin-bottom:14px;padding:14px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:10px"><div style="font-size:18px">${icon}</div><div><div style="font-size:12px;font-weight:600">${name}</div><div style="font-size:10px;color:var(--muted)">7d out: ${fmt(l7)} · 30d out: ${fmt(l30)} · reorder @ ${fmt(threshold)}</div><div class="inv-alert ${ac}">${at}</div></div></div>
+        <div style="font-size:22px;font-weight:800;font-family:var(--font-mono);color:${col}">${fmt(stock)}</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  }).join(''):'<div class="empty">Loading stock data...</div>';
+
+  // Units flow
+  const adj=0;
+  const lowSkus='Check inventory tab';
+  document.getElementById('inv-flow').innerHTML=`
+    <div class="billing-row"><span class="billing-label">Units Received</span><span class="billing-val" style="color:var(--accent)">${fmt(totalReceived)}</span></div>
+    <div class="billing-row"><span class="billing-label">Units Shipped</span><span class="billing-val" style="color:var(--red)">− ${fmt(totalShipped)}</span></div>
+    <div class="billing-row"><span class="billing-label">Adjustments</span><span class="billing-val" style="color:var(--muted)">${adj>=0?'+':''}${fmt(adj)}</span></div>
+    <div class="billing-row" style="border-top:1px solid rgba(6,214,160,0.2);margin-top:4px;padding-top:12px"><span class="billing-label" style="font-weight:700;color:var(--text)">Net On Hand</span><span class="billing-val" style="color:var(--green);font-size:17px">${fmt(onHand)}</span></div>
+    <div class="billing-row"><span class="billing-label">Boxes Used</span><span class="billing-val">${fmt(boxesUsed)}</span></div>
+    <div class="billing-row"><span class="billing-label">Boxes Left</span><span class="billing-val" style="color:${boxesLeft===0?'var(--red)':'var(--text)'}">${fmt(boxesLeft)}</span></div>
+    <div class="billing-row"><span class="billing-label" style="color:var(--yellow)">Low Stock SKUs</span><span class="billing-val" style="color:var(--yellow);font-size:11px">${lowSkus}</span></div>`;
+
+  // Inbound table
+  document.getElementById('inbound-tbody').innerHTML=inboundData.length?inboundData.slice(0,100).map(r=>`<tr><td class="mono" style="color:var(--muted)">${r.date||'—'}</td><td>${r.sku||r.product||'—'}</td><td class="mono">${r.qty_in||r.units||r.quantity||r.qty||'—'}</td><td style="font-size:11px;color:var(--muted)">${r.po_tracking||r.notes||r.note||'—'</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No inbound data found — make sure your Inbound tab is named "Inbound"</td></tr>';
+}
+
+// ══════════════════════════════════════════════════
+// SHIPMENTS PAGE
+// ══════════════════════════════════════════════════
+function renderShipments() {
+  const range=pageRanges.shipments, orders=filterByRange(range), label=rangeLabel(range);
+  const totalUnits=orders.reduce((s,o)=>s+o.qty,0), totalRev=orders.reduce((s,o)=>s+o.charge,0);
+  const days=[...new Set(orders.map(o=>o.date?.toISOString().split('T')[0]).filter(Boolean))].sort().reverse();
+
+  document.getElementById('ship-meta').textContent=label;
+  document.getElementById('ship-stat-row').innerHTML=`
+    <div class="stat-box"><div class="stat-box-label">Days Shipped</div><div class="stat-box-val">${fmt(days.length)}</div><div class="stat-box-sub">${label}</div></div>
+    <div class="stat-box"><div class="stat-box-label">Total Orders</div><div class="stat-box-val">${fmt(orders.length)}</div><div class="stat-box-sub">this period</div></div>
+    <div class="stat-box"><div class="stat-box-label">Units Out</div><div class="stat-box-val">${fmt(totalUnits)}</div><div class="stat-box-sub">this period</div></div>
+    <div class="stat-box"><div class="stat-box-label">Revenue</div><div class="stat-box-val">${fmtM(totalRev)}</div><div class="stat-box-sub">this period</div></div>`;
+
+  document.getElementById('shipments-list').innerHTML=days.length?days.map(day=>{
+    const dayOrders=orders.filter(o=>o.date?.toISOString().split('T')[0]===day);
+    const dayUnits=dayOrders.reduce((s,o)=>s+o.qty,0), dayRev=dayOrders.reduce((s,o)=>s+o.charge,0);
+    const skuCounts={};dayOrders.forEach(o=>{skuCounts[o.sku]=(skuCounts[o.sku]||0)+1;});
+    const skuSummary=Object.entries(skuCounts).map(([s,c])=>`${s}: ${c}`).join(' · ');
+    const d=new Date(day); const label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    return `<div class="ship-card"><div class="ship-card-top"><div><div class="ship-id">${label}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--font-mono)">${skuSummary||'—'}</div></div><span class="status-pill shipped">USPS Picked Up</span></div><div class="ship-meta"><div class="ship-meta-item">Orders: <span>${fmt(dayOrders.length)}</span></div><div class="ship-meta-item">Units: <span>${fmt(dayUnits)}</span></div><div class="ship-meta-item">Revenue: <span>${fmtM(dayRev)}</span></div><div class="ship-meta-item">Prep types: <span>${[...new Set(dayOrders.map(o=>o.prep).filter(Boolean))].join(', ')||'—'}</span></div></div></div>`;
+  }).join(''):'<div class="empty">No shipments in this period</div>';
+}
+
+// ══════════════════════════════════════════════════
+// REPORTS PAGE
+// ══════════════════════════════════════════════════
+function renderReports() {
+  const range=pageRanges.reports, orders=filterByRange(range);
+  const totalUnits=orders.reduce((s,o)=>s+o.qty,0), totalRev=orders.reduce((s,o)=>s+o.charge,0);
+  const days=[...new Set(orders.map(o=>o.date?.toISOString().split('T')[0]).filter(Boolean))].sort();
+
+  document.getElementById('reports-stat-row').innerHTML=`
+    <div class="stat-box"><div class="stat-box-label">Total Orders</div><div class="stat-box-val">${fmt(orders.length)}</div><div class="stat-box-sub">${rangeLabel(range)}</div></div>
+    <div class="stat-box"><div class="stat-box-label">Units Shipped</div><div class="stat-box-val">${fmt(totalUnits)}</div><div class="stat-box-sub">this period</div></div>
+    <div class="stat-box"><div class="stat-box-label">Revenue</div><div class="stat-box-val">${fmtM(totalRev)}</div><div class="stat-box-sub">this period</div></div>
+    <div class="stat-box"><div class="stat-box-label">Avg/Day</div><div class="stat-box-val">${days.length>0?fmt(Math.round(orders.length/days.length)):0}</div><div class="stat-box-sub">orders per day</div></div>`;
+
+  // Daily orders chart
+  const dayLabels=days.slice(-30), dayCounts=dayLabels.map(d=>orders.filter(o=>o.date?.toISOString().split('T')[0]===d).length);
+  if(charts.daily){charts.daily.destroy();}
+  const dc=document.getElementById('daily-chart').getContext('2d');
+  charts.daily=new Chart(dc,{type:'bar',data:{labels:dayLabels.map(d=>{const dt=new Date(d);return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});}),datasets:[{data:dayCounts,backgroundColor:'rgba(59,130,246,0.6)',borderColor:'#3b82f6',borderWidth:1,borderRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}}}});
+
+  // Channel pie chart
+  const chMap={};orders.forEach(o=>{if(!o.channel)return;chMap[o.channel]=(chMap[o.channel]||0)+1;});
+  const chLabels=Object.keys(chMap), chVals=Object.values(chMap);
+  const chColors={'TikTok Shop':'#f472b6','Shopify':'#a3e635','Amazon':'#f59e0b'};
+  if(charts.channel){charts.channel.destroy();}
+  const chc=document.getElementById('channel-chart').getContext('2d');
+  charts.channel=new Chart(chc,{type:'doughnut',data:{labels:chLabels,datasets:[{data:chVals,backgroundColor:chLabels.map(l=>chColors[l]||'#6b7280'),borderWidth:0}]},options:{responsive:true,plugins:{legend:{labels:{color:'#e8eaf0',font:{size:11}}}}}});
+
+  // Top SKUs
+  const skuMap={};orders.forEach(o=>{if(!o.sku)return;if(!skuMap[o.sku])skuMap[o.sku]={count:0,rev:0};skuMap[o.sku].count++;skuMap[o.sku].rev+=o.charge;});
+  const sortedSKUs=Object.entries(skuMap).sort((a,b)=>b[1].count-a[1].count);
+  const maxSKU=sortedSKUs[0]?.[1]?.count||1;
+  document.getElementById('top-skus-list').innerHTML=sortedSKUs.map(([name,s],i)=>{
+    const col=skuColor(name,i),pct=Math.round(s.count/maxSKU*100);
+    return `<div class="channel-item"><div class="channel-top"><div class="channel-name"><div class="ch-dot" style="background:${col}"></div>${name}</div><div class="channel-count">${fmt(s.count)}</div></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="channel-rev">${fmtM(s.rev)} revenue</div></div>`;
+  }).join('')||'<div class="empty">No data</div>';
+
+  // Prep breakdown
+  const prepMap={};orders.forEach(o=>{if(!o.prep)return;if(!prepMap[o.prep])prepMap[o.prep]={count:0,rev:0};prepMap[o.prep].count++;prepMap[o.prep].rev+=o.charge;});
+  const prepList=Object.entries(prepMap).sort((a,b)=>b[1].count-a[1].count);
+  const maxPrep=prepList[0]?.[1]?.count||1;
+  const prepColors={'Bubble Mailer':'#06d6a0','Bubbler Mailer':'#06d6a0','Box':'#f59e0b'};
+  document.getElementById('prep-breakdown').innerHTML=prepList.map(([name,p])=>{
+    const col=prepColors[name]||'#a78bfa',pct=Math.round(p.count/maxPrep*100);
+    return `<div class="channel-item"><div class="channel-top"><div class="channel-name"><div class="ch-dot" style="background:${col}"></div>${name}</div><div class="channel-count">${fmt(p.count)}</div></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="channel-rev">${fmtM(p.rev)} in charges</div></div>`;
+  }).join('')||'<div class="empty">No data</div>';
+}
+
+// ══════════════════════════════════════════════════
+// BILLING PAGE
+// ══════════════════════════════════════════════════
+function renderBilling() {
+  document.getElementById('bill-total-rev').textContent=fmtM(apiData.revenue_alltime||0);
+  document.getElementById('bill-paid').textContent=fmtM(apiData.total_paid||0);
+  document.getElementById('bill-due').textContent=fmtM(apiData.amount_due||0);
+  document.getElementById('bill-month').textContent=fmtM(apiData.revenue_month||0);
+
+  // SKU billing table
+  const skuMap={};
+  allOrders.forEach(o=>{if(!o.sku)return;if(!skuMap[o.sku])skuMap[o.sku]={orders:0,qty:0,charges:0,rates:[]};skuMap[o.sku].orders++;skuMap[o.sku].qty+=o.qty;skuMap[o.sku].charges+=o.charge;if(o.rate>0)skuMap[o.sku].rates.push(o.rate);});
+  const totalRev=Object.values(skuMap).reduce((s,v)=>s+v.charges,0)||1;
+  const skuRows=Object.entries(skuMap).sort((a,b)=>b[1].charges-a[1].charges);
+  document.getElementById('billing-sku-tbody').innerHTML=skuRows.map(([name,s],i)=>{
+    const col=skuColor(name,i), avgRate=s.rates.length>0?s.rates.reduce((a,b)=>a+b,0)/s.rates.length:0;
+    return `<tr><td><span class="pill" style="background:${col}18;color:${col}">${name}</span></td><td class="mono">${fmt(s.orders)}</td><td class="mono">${fmt(s.qty)}</td><td class="mono">${fmtM(avgRate)}</td><td class="mono">${fmtM(s.charges)}</td><td class="mono" style="color:var(--muted)">${Math.round(s.charges/totalRev*100)}%</td></tr>`;
+  }).join('')||'<tr><td colspan="6" class="empty">No data</td></tr>';
+
+  // Monthly summary
+  const monthMap={};
+  allOrders.forEach(o=>{if(!o.date)return;const key=`${o.date.getFullYear()}-${String(o.date.getMonth()+1).padStart(2,'0')}`;if(!monthMap[key])monthMap[key]={orders:0,units:0,rev:0};monthMap[key].orders++;monthMap[key].units+=o.qty;monthMap[key].rev+=o.charge;});
+  const months=Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0]));
+  document.getElementById('billing-monthly-tbody').innerHTML=months.map(([key,m])=>{
+    const [yr,mo]=key.split('-');const label=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    return `<tr><td style="font-weight:600">${label}</td><td class="mono">${fmt(m.orders)}</td><td class="mono">${fmt(m.units)}</td><td class="mono">${fmtM(m.rev)}</td><td class="mono" style="color:var(--muted)">${fmtM(m.orders>0?m.rev/m.orders:0)}</td></tr>`;
+  }).join('')||'<tr><td colspan="5" class="empty">No data</td></tr>';
+}
+
+// ══════════════════════════════════════════════════
+// SKU PERFORMANCE PAGE
+// ══════════════════════════════════════════════════
+function renderSKUPerf() {
+  const range=pageRanges.sku, orders=filterByRange(range), label=rangeLabel(range);
+  document.getElementById('sku-table-meta').textContent=label;
+  renderSKUCards(orders,'sku-perf-grid');
+
+  const skuMap={};
+  orders.forEach(o=>{if(!o.sku)return;if(!skuMap[o.sku])skuMap[o.sku]={orders:0,qty:0,charges:0,misc:0,rates:[]};skuMap[o.sku].orders++;skuMap[o.sku].qty+=o.qty;skuMap[o.sku].charges+=o.charge;skuMap[o.sku].misc+=o.misc;if(o.rate>0)skuMap[o.sku].rates.push(o.rate);});
+  const total=orders.length||1;
+  const skuRows=Object.entries(skuMap).sort((a,b)=>b[1].orders-a[1].orders);
+  document.getElementById('sku-perf-tbody').innerHTML=skuRows.map(([name,s],i)=>{
+    const col=skuColor(name,i), avgRate=s.rates.length>0?s.rates.reduce((a,b)=>a+b,0)/s.rates.length:0;
+    return `<tr><td><span class="pill" style="background:${col}18;color:${col}">${name}</span></td><td class="mono">${fmt(s.orders)}</td><td class="mono">${fmt(s.qty)}</td><td class="mono">${fmtM(s.charges)}</td><td class="mono">${fmtM(avgRate)}</td><td class="mono" style="color:var(--red)">${fmtM(s.misc)}</td><td class="mono" style="color:var(--muted)">${Math.round(s.orders/total*100)}%</td></tr>`;
+  }).join('')||'<tr><td colspan="7" class="empty">No data in this period</td></tr>';
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+loadData();
+</script>
+</body>
+</html>
