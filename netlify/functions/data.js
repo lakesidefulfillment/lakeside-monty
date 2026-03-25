@@ -1,17 +1,17 @@
 const https = require('https');
 
-const SHEET_URLS = {
-  API: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6J6k1mNgNeyCPtP-f30ARDrGVNUEBc-vLhhNSORj1lqT-G-k69ixZS58teHi6czLEJxJiyuiQWmHa/pub?gid=1158528977&single=true&output=csv',
-  Stock: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6J6k1mNgNeyCPtP-f30ARDrGVNUEBc-vLhhNSORj1lqT-G-k69ixZS58teHi6czLEJxJiyuiQWmHa/pub?gid=295677401&single=true&output=csv',
-  Inbound: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6J6k1mNgNeyCPtP-f30ARDrGVNUEBc-vLhhNSORj1lqT-G-k69ixZS58teHi6czLEJxJiyuiQWmHa/pub?gid=1389641724&single=true&output=csv',
-  Orders: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6J6k1mNgNeyCPtP-f30ARDrGVNUEBc-vLhhNSORj1lqT-G-k69ixZS58teHi6czLEJxJiyuiQWmHa/pub?gid=205851154&single=true&output=csv',
-};
+// Apps Script serves API + Stock + Inbound data — no auth issues
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQP-IrLKgaoNbU7nQFMoQ1fMnAw70JaQdklbw20ZLVm1oAVBpIdY-NfgcTcHFKEGGN2w/exec';
+
+// Orders CSV — published, working fine
+const ORDERS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6J6k1mNgNeyCPtP-f30ARDrGVNUEBc-vLhhNSORj1lqT-G-k69ixZS58teHi6czLEJxJiyuiQWmHa/pub?gid=205851154&single=true&output=csv';
 
 function fetchURL(url) {
   return new Promise((resolve, reject) => {
     const get = (u, redirects = 0) => {
-      if (redirects > 5) return reject(new Error('Too many redirects'));
-      https.get(u, (res) => {
+      if (redirects > 10) return reject(new Error('Too many redirects'));
+      const lib = require(u.startsWith('https') ? 'https' : 'http');
+      lib.get(u, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           return get(res.headers.location, redirects + 1);
         }
@@ -43,49 +43,46 @@ function parseCSV(text) {
 
 function clean(s) { return (s || '').replace(/"/g, '').trim(); }
 function parseNum(s) {
-  const v = (s || '').replace(/[$,"\s]/g, '');
+  const v = (s || '').toString().replace(/[$,"\s]/g, '');
   return isNaN(v) || v === '' ? 0 : parseFloat(v);
 }
 
 exports.handler = async function(event, context) {
   try {
-    const [apiCSV, stockCSV, inboundCSV, ordersCSV] = await Promise.all([
-      fetchURL(SHEET_URLS.API),
-      fetchURL(SHEET_URLS.Stock),
-      fetchURL(SHEET_URLS.Inbound),
-      fetchURL(SHEET_URLS.Orders),
+    const [appsScriptText, ordersCSV] = await Promise.all([
+      fetchURL(APPS_SCRIPT_URL),
+      fetchURL(ORDERS_URL),
     ]);
 
-    // Parse API tab
+    // Parse Apps Script JSON
+    let appsData = {};
+    try {
+      const jsonMatch = appsScriptText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) appsData = JSON.parse(jsonMatch[0]);
+    } catch(e) {
+      console.log('Apps Script parse error:', e.message, appsScriptText.substring(0, 200));
+    }
+
+    // Build apiData from Apps Script key/value pairs
     const apiData = {};
-    parseCSV(apiCSV).forEach(r => {
-      const key = clean(r[0]), val = clean(r[1]);
-      if (key && key !== 'key') {
-        const num = parseNum(val);
-        apiData[key] = num !== 0 ? num : val;
+    Object.entries(appsData).forEach(([k, v]) => {
+      if (k !== 'stock' && k !== 'inbound') {
+        apiData[k] = typeof v === 'number' ? v : parseNum(String(v || ''));
       }
     });
 
-    // Parse Stock tab
-    const stockRows = parseCSV(stockCSV);
-    const stockHeaders = stockRows[0].map(h => clean(h));
-    const stock = stockRows.slice(1).map(row => {
-      const o = {}; stockHeaders.forEach((h, i) => o[h] = clean(row[i] || '')); return o;
-    }).filter(r => r.SKU || r.sku);
+    const stock = appsData.stock || [];
+    const inbound = appsData.inbound || [];
 
-    // Parse Inbound tab
-    const inbRows = parseCSV(inboundCSV);
-    const inbHeaders = inbRows[0].map(h => clean(h));
-    const inbound = inbRows.slice(1).map(row => {
-      const o = {}; inbHeaders.forEach((h, i) => o[h] = clean(row[i] || '')); return o;
-    }).filter(r => r.Date || r.SKU || r.date || r.sku);
-
-    // Parse Orders tab
-    const ordersRows = parseCSV(ordersCSV);
-    const ordersHeaders = ordersRows[0].map(h => clean(h));
-    const orders = ordersRows.slice(1).map(row => {
-      const o = {}; ordersHeaders.forEach((h, i) => o[h] = clean(row[i] || '')); return o;
-    }).filter(r => r.Date || r.date);
+    // Parse Orders CSV
+    let orders = [];
+    if (ordersCSV && !ordersCSV.includes('<!DOCTYPE')) {
+      const ordersRows = parseCSV(ordersCSV);
+      const ordersHeaders = ordersRows[0].map(h => clean(h));
+      orders = ordersRows.slice(1).map(row => {
+        const o = {}; ordersHeaders.forEach((h, i) => o[h] = clean(row[i] || '')); return o;
+      }).filter(r => r.Date || r.date);
+    }
 
     return {
       statusCode: 200,
@@ -98,6 +95,7 @@ exports.handler = async function(event, context) {
     };
 
   } catch (err) {
+    console.error('Function error:', err);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: err.message }),
