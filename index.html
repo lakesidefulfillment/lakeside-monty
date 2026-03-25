@@ -875,7 +875,7 @@ function renderInventory() {
     <div class="billing-row"><span class="billing-label" style="color:var(--yellow)">Low Stock SKUs</span><span class="billing-val" style="color:var(--yellow);font-size:11px">${lowSkus}</span></div>`;
 
   // Inbound table
-  document.getElementById('inbound-tbody').innerHTML=inboundData.length?inboundData.slice(0,100).map(r=>`<tr><td class="mono" style="color:var(--muted)">${r.date||'—'}</td><td>${r.sku||r.product||'—'}</td><td class="mono">${r.qty_in||r.units||r.quantity||r.qty||'—'}</td><td style="font-size:11px;color:var(--muted)">${r.po_tracking||r.notes||r.note||'—'</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No inbound data found — make sure your Inbound tab is named "Inbound"</td></tr>';
+  document.getElementById('inbound-tbody').innerHTML=inboundData.length?inboundData.slice(0,100).map(r=>`<tr><td class="mono" style="color:var(--muted)">${r.Date||r.date||'—'}</td><td>${r.SKU||r.sku||r.product||'—'}</td><td class="mono">${r['Qty In']||r.qty_in||r.units||r.quantity||'—'}</td><td style="font-size:11px;color:var(--muted)">${r['PO / Tracking']||r.po_tracking||r.notes||'—'}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No inbound data</td></tr>';
 }
 
 // ══════════════════════════════════════════════════
@@ -1001,7 +1001,6 @@ function renderSKUPerf() {
 // ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
-} // close any unclosed block
 loadData();
 
 </script>
