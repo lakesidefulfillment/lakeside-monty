@@ -590,6 +590,41 @@ async function loadData() {
     // Inbound data
     inboundData = json.inbound || [];
 
+    // Map raw orders from backend
+    if (json.orders && json.orders.length > 0) {
+      allOrders = json.orders.map(o => {
+        const pn = s => { const v=(s||'').replace(/[$,\s]/g,''); return isNaN(v)||v===''?0:parseFloat(v); };
+        const pd = s => {
+          if (!s) return null;
+          const mdy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+          if (mdy) return new Date(parseInt(mdy[3]), parseInt(mdy[1])-1, parseInt(mdy[2]));
+          const d = new Date(s); return isNaN(d) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        };
+        return {
+          date: pd(o.Date || o.date),
+          order_id: o['Order ID'] || o.order_id || '',
+          sku: o.SKU || o.sku || '',
+          qty: pn(o['Qty Out'] || o.qty_out || '1'),
+          channel: o.Channel || o.channel || '',
+          rate: pn(o['Rate Per Unit'] || o.rate_per_unit || '0'),
+          charge: pn(o['Grand Total'] || o.grand_total || '0'),
+          misc: pn(o['Misc Cost'] || o.misc_cost || '0'),
+          prep: o['Prep Type'] || o.prep_type || o.prep || '',
+        };
+      }).filter(o => o.date);
+
+      // Populate dropdowns
+      const skus=[...new Set(allOrders.map(o=>o.sku).filter(Boolean))].sort();
+      const channels=[...new Set(allOrders.map(o=>o.channel).filter(Boolean))].sort();
+      const preps=[...new Set(allOrders.map(o=>o.prep).filter(Boolean))].sort();
+      const skuSel=document.getElementById('orders-sku-filter');
+      const chSel=document.getElementById('orders-channel-filter');
+      const prSel=document.getElementById('orders-prep-filter');
+      skuSel.innerHTML='<option value="">All SKUs</option>'; skus.forEach(s=>skuSel.innerHTML+=`<option>${s}</option>`);
+      chSel.innerHTML='<option value="">All Channels</option>'; channels.forEach(c=>chSel.innerHTML+=`<option>${c}</option>`);
+      prSel.innerHTML='<option value="">All Prep Types</option>'; preps.forEach(p=>prSel.innerHTML+=`<option>${p}</option>`);
+    }
+
     document.getElementById('sidebar-client-name').textContent = CONFIG.clientName;
     document.getElementById('settings-sheet-id').textContent = CONFIG.sheetId;
     document.getElementById('settings-client-name').textContent = CONFIG.clientName;
