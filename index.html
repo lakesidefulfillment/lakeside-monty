@@ -541,6 +541,8 @@ const fmt = n => Number(n).toLocaleString();
 const fmtM = n => '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtDate = d => d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
 const skuColor = (name,i) => CONFIG.skuColors[name] || SKU_COLORS_FALLBACK[i%SKU_COLORS_FALLBACK.length];
+const parseNum = s => { const v=(s||'').toString().replace(/[$,"%\s]/g,''); return isNaN(v)||v===''?0:parseFloat(v); };
+const clean = s => (s||'').replace(/"/g,'').trim();
 
 function getDateRange(range) {
   const now = new Date(), today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
@@ -583,6 +585,7 @@ async function loadData() {
 
     // API data
     apiData = json.apiData || {};
+    console.log('apiData loaded:', apiData.orders_30d, apiData.revenue_alltime, apiData.amount_due);
 
     // Stock data
     stockData = json.stock || [];
