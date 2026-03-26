@@ -9,7 +9,7 @@ const https = require('https');
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL ||
   'https://script.google.com/macros/s/AKfycbwQP-IrLKgaoNbU7nQFMoQ1fMnAw70JaQdklbw20ZLVm1oAVBpIdY-NfgcTcHFKEGGN2w/exec';
 
-function fetchURL(url, timeoutMs = 8000) {
+function fetchURL(url, timeoutMs = 25000) {
   return new Promise((resolve) => {
     const timer = setTimeout(() => resolve({ ok: false, error: 'timeout' }), timeoutMs);
     const get = (u, redirects = 0) => {
