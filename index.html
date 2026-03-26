@@ -240,7 +240,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 }
 .inv-item:hover{border-color:var(--border2);}
 .inv-left{display:flex;align-items:center;gap:10px;}
-.inv-icon{width:32px;height:32px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.inv-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:15px;overflow:hidden;flex-shrink:0;}
 .inv-sku{font-size:12px;font-weight:600;color:var(--text);}
 .inv-sub{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--font-mono);}
 .inv-count{font-size:19px;font-weight:800;font-family:var(--font-mono);text-align:right;}
@@ -690,7 +690,7 @@ const CONFIG = {
   clientName: 'Monty Supplements',
   sheetId: '1iIind4E2EHljYxroGMFXivuzJItFQa4TzjW3SKJaSpo',
   skuColors: { 'Kids Toxin Detox':'#4ade80','BREATHEASE':'#29b6e8','Breathease':'#29b6e8','TOXIN STRAWBERRY LEM':'#f472b6','Toxin Strawberry Lem':'#f472b6','TOXIN WHITE PEACH':'#fb923c','Toxin White Peach':'#fb923c' },
-  skuIcons:  { 'Kids Toxin Detox':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img2.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','BREATHEASE':'<img src="https://www.montysupps.com/cdn/shop/files/be1x.png?v=1761578368" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','Breathease':'<img src="https://www.montysupps.com/cdn/shop/files/be1x.png?v=1761578368" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','TOXIN STRAWBERRY LEM':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','Toxin Strawberry Lem':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','TOXIN WHITE PEACH':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">' },
+  skuIcons:  { 'Kids Toxin Detox':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img2.webp?v=1751871046" style="width:36px;height:36px;object-fit:cover;border-radius:4px;display:block;">','BREATHEASE':'<img src="https://www.montysupps.com/cdn/shop/files/be1x.png?v=1761578368" style="width:36px;height:36px;object-fit:cover;border-radius:4px;display:block;">','Breathease':'<img src="https://www.montysupps.com/cdn/shop/files/be1x.png?v=1761578368" style="width:36px;height:36px;object-fit:cover;border-radius:4px;display:block;">','TOXIN STRAWBERRY LEM':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:36px;height:36px;object-fit:cover;border-radius:4px;display:block;">','Toxin Strawberry Lem':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:36px;height:36px;object-fit:cover;border-radius:4px;display:block;">','TOXIN WHITE PEACH':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:36px;height:36px;object-fit:cover;border-radius:4px;display:block;">' },
 };
 const SKU_COLORS_FALLBACK = ['#3b82f6','#06d6a0','#f59e0b','#f472b6','#a78bfa','#34d399'];
 
@@ -972,7 +972,7 @@ function renderInvList(targetId) {
     if(stock<=0){ac='alert-danger';at='Out of Stock';}
     else if(belowReorder||stock<threshold){ac='alert-warn';at='Low Stock';}
     const col=stock<=0?'var(--red)':stock<threshold?'var(--yellow)':'var(--green)';
-    return `<div class="inv-item"><div class="inv-left"><div class="inv-icon" style="width:36px;height:36px;overflow:hidden;">${icon}</div><div><div class="inv-sku">${name}</div><div class="inv-sub">on hand · reorder @ ${fmt(threshold)}</div><div class="inv-alert ${ac}">${at}</div></div></div><div><div class="inv-count" style="color:${col}">${fmt(stock)}</div><div class="inv-units">units</div></div></div>`;
+    return `<div class="inv-item"><div class="inv-left"><div class="inv-icon">${icon}</div><div><div class="inv-sku">${name}</div><div class="inv-sub">on hand · reorder @ ${fmt(threshold)}</div><div class="inv-alert ${ac}">${at}</div></div></div><div><div class="inv-count" style="color:${col}">${fmt(stock)}</div><div class="inv-units">units</div></div></div>`;
   }).join('');
 }
 
