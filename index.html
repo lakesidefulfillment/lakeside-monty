@@ -7,16 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#07080b; --bg2:#0e1015; --bg3:#141619; --bg4:#1a1c21;
-  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.11);
-  --text:#f0f1f5; --muted:#5a5f6e;
-  --accent:#2d7aff; --accent2:#1a5fd4;
-  --green:#00c896; --yellow:#f5a623;
-  --red:#ff4757; --pink:#f472b6; --lime:#a3e635; --purple:#9b7fff;
+  --bg:#060708; --bg2:#0c0e12; --bg3:#12141a; --bg4:#181b22;
+  --border:rgba(255,255,255,0.05); --border2:rgba(255,255,255,0.1);
+  --text:#eceef4; --muted:#52586a;
+  --accent:#3d8eff; --accent2:#2563eb;
+  --green:#00e5a0; --yellow:#ffb224;
+  --red:#ff3d57; --pink:#f472b6; --lime:#a3e635; --purple:#9b7fff;
   --font-head:'Plus Jakarta Sans',sans-serif; --font-mono:'JetBrains Mono',monospace;
   --sidebar-w:240px;
-  --radius:8px; --radius-lg:12px;
-  --transition:0.18s cubic-bezier(0.4,0,0.2,1);
+  --radius:6px; --radius-lg:10px;
+  --transition:0.16s cubic-bezier(0.4,0,0.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.5;}
@@ -27,19 +27,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 /* ── SIDEBAR ─────────────────────────────────────── */
 .sidebar{
   position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);
-  background:var(--bg2);
-  border-right:1px solid var(--border);
+  background:#08090d;
+  border-right:1px solid rgba(255,255,255,0.07);
   display:flex;flex-direction:column;z-index:100;
 }
 .logo-area{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
 .logo-mark{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
 .logo-icon{
-  width:34px;height:34px;
+  width:36px;height:36px;
   background:var(--accent);
   border-radius:var(--radius);
   display:flex;align-items:center;justify-content:center;
   font-size:15px;font-weight:800;color:#fff;
   letter-spacing:-0.02em;
+  box-shadow:0 0 20px rgba(61,142,255,0.4);
 }
 .logo-text{font-size:13px;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;color:var(--text);}
 .logo-sub{font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:1px;}
@@ -75,13 +76,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 }
 .nav-item:hover{background:var(--bg3);color:var(--text);}
 .nav-item.active{
-  background:rgba(45,122,255,0.1);
+  background:rgba(61,142,255,0.12);
   color:var(--accent);
-  font-weight:600;
+  font-weight:700;
 }
 .nav-item.active::before{
-  content:'';position:absolute;left:0;top:20%;bottom:20%;
-  width:2px;background:var(--accent);border-radius:1px;
+  content:'';position:absolute;left:0;top:15%;bottom:15%;
+  width:3px;background:var(--accent);border-radius:2px;
+  box-shadow:0 0 8px rgba(61,142,255,0.5);
 }
 .nav-item svg{width:15px;height:15px;flex-shrink:0;}
 .nav-badge{
@@ -95,7 +97,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 
 /* ── PAGE HEADER ─────────────────────────────────── */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
-.page-title{font-size:22px;font-weight:800;letter-spacing:-0.03em;color:var(--text);}
+.page-title{font-size:26px;font-weight:800;letter-spacing:-0.04em;color:var(--text);}
 .page-sub{font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--font-mono);letter-spacing:0.01em;}
 .header-right{display:flex;align-items:center;gap:8px;}
 .btn-icon{
@@ -122,7 +124,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
   letter-spacing:0.01em;
 }
 .date-btn:hover{color:var(--text);background:var(--bg3);}
-.date-btn.active{background:var(--accent);color:#fff;box-shadow:0 0 12px rgba(45,122,255,0.3);}
+.date-btn.active{background:var(--accent);color:#fff;box-shadow:0 0 16px rgba(61,142,255,0.4);font-weight:700;}
 
 /* ── ALERT ───────────────────────────────────────── */
 .alert-banner{
@@ -148,8 +150,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
   background:linear-gradient(90deg,transparent,var(--kpi-color,var(--accent)),transparent);
   opacity:0.4;
 }
-.kpi-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600;}
-.kpi-value{font-size:26px;font-weight:800;letter-spacing:-0.03em;font-family:var(--font-mono);color:var(--text);}
+.kpi-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700;}
+.kpi-value{font-size:30px;font-weight:800;letter-spacing:-0.04em;font-family:var(--font-mono);color:var(--text);}
 .kpi-sub{font-size:10px;font-weight:500;margin-top:8px;padding:2px 7px;border-radius:4px;font-family:var(--font-mono);display:inline-block;letter-spacing:0.01em;}
 .up{background:rgba(0,200,150,0.1);color:var(--green);}
 .down{background:rgba(255,71,87,0.1);color:var(--red);}
@@ -163,9 +165,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 }
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .card-title{
-  font-size:10px;font-weight:700;letter-spacing:0.1em;
+  font-size:10px;font-weight:700;letter-spacing:0.12em;
   text-transform:uppercase;display:flex;align-items:center;gap:8px;
-  color:var(--muted);
+  color:var(--text);opacity:0.6;
 }
 .card-dot{width:5px;height:5px;border-radius:50%;}
 .card-meta{font-size:10px;color:var(--muted);font-family:var(--font-mono);}
@@ -317,7 +319,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 /* ── PAGE SECTIONS ───────────────────────────────── */
 .page-section{display:none;}
 .page-section.active{display:block;animation:fadeIn 0.2s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── PAGINATION ──────────────────────────────────── */
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 0 0;border-top:1px solid var(--border);margin-top:8px;}
@@ -798,13 +800,14 @@ async function loadData() {
     document.getElementById('settings-client-name').textContent = CONFIG.clientName;
     document.getElementById('settings-last-refresh').textContent = new Date().toLocaleString();
     document.getElementById('settings-total-orders').textContent = fmt(apiData.orders_alltime || 0);
-    document.getElementById('nav-badge').textContent = fmt(allOrders.length || apiData.orders_alltime || 0);
+    document.getElementById('nav-badge').textContent = fmt(apiData.orders_today || 0);
     document.getElementById('last-updated').textContent =
       'Last updated: ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
 
     document.getElementById('loading').classList.add('hidden');
     renderDashboard();
     renderBilling();
+    renderForecast();
 
   } catch(e) {
     console.error(e);
@@ -953,7 +956,7 @@ function renderSKUCards(orders, targetId) {
   const skus=Object.entries(skuMap).sort((a,b)=>b[1].orders-a[1].orders);
   document.getElementById(targetId).innerHTML=skus.length?skus.map(([name,s],i)=>{
     const col=skuColor(name,i);
-    return `<div class="sku-card" style="--sku-color:${col}"><div class="sku-name" style="color:${col}">${name}</div><div class="sku-orders">${fmt(s.orders)} orders</div><div class="sku-row"><span class="sku-row-label">Qty Out</span><span class="sku-row-val">${fmt(s.qty)}</span></div><div class="sku-row"><span class="sku-row-label">Total Charges</span><span class="sku-row-val">${fmtM(s.charges)}</span></div><div class="sku-row"><span class="sku-row-label">Misc Cost</span><span class="sku-row-val">${fmtM(s.misc)}</span></div><div class="sku-row sku-total"><span class="sku-row-label" style="font-weight:700">Grand Total</span><span class="sku-row-val" style="color:${col}">${fmtM(s.charges)}</span></div></div>`;
+    return `<div class="sku-card" style="--sku-color:${col}"><div class="sku-name" style="color:${col}">${name}</div><div class="sku-orders">${fmt(s.orders)} orders</div><div class="sku-row"><span class="sku-row-label">Qty Out</span><span class="sku-row-val">${fmt(s.qty)}</span></div><div class="sku-row"><span class="sku-row-label">Total Charges</span><span class="sku-row-val">${fmtM(s.charges)}</span></div><div class="sku-row sku-total"><span class="sku-row-label" style="font-weight:700">Grand Total</span><span class="sku-row-val" style="color:${col}">${fmtM(s.charges)}</span></div></div>`;
   }).join(''):'<div class="empty" style="grid-column:1/-1">No orders in this period</div>';
 }
 
@@ -1202,7 +1205,7 @@ function renderSKUPerf() {
   const skuRows=Object.entries(skuMap).sort((a,b)=>b[1].orders-a[1].orders);
   document.getElementById('sku-perf-tbody').innerHTML=skuRows.map(([name,s],i)=>{
     const col=skuColor(name,i), avgRate=s.rates.length>0?s.rates.reduce((a,b)=>a+b,0)/s.rates.length:0;
-    return `<tr><td><span class="pill" style="background:${col}18;color:${col}">${name}</span></td><td class="mono">${fmt(s.orders)}</td><td class="mono">${fmt(s.qty)}</td><td class="mono">${fmtM(s.charges)}</td><td class="mono">${fmtM(avgRate)}</td><td class="mono" style="color:var(--red)">${fmtM(s.misc)}</td><td class="mono" style="color:var(--muted)">${Math.round(s.orders/total*100)}%</td></tr>`;
+    return `<tr><td><span class="pill" style="background:${col}18;color:${col}">${name}</span></td><td class="mono">${fmt(s.orders)}</td><td class="mono">${fmt(s.qty)}</td><td class="mono">${fmtM(s.charges)}</td><td class="mono">${fmtM(avgRate)}</td><td class="mono" style="color:var(--muted)">${Math.round(s.orders/total*100)}%</td></tr>`;
   }).join('')||'<tr><td colspan="7" class="empty">No data in this period</td></tr>';
 }
 
