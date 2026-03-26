@@ -239,9 +239,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
       Inventory
     </div>
-    <div class="nav-item" onclick="goTo('shipments',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/></svg>
-      Shipments
+    <div class="nav-item" onclick="goTo('forecast',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Forecast
     </div>
     <div class="nav-section">Analytics</div>
     <div class="nav-item" onclick="goTo('reports',this)">
@@ -388,26 +388,68 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ SHIPMENTS -->
-<div class="page-section" id="page-shipments">
+<!-- ═══════════════════════════════════════════════ FORECAST -->
+<div class="page-section" id="page-forecast">
   <div class="page-header">
-    <div><div class="page-title">Shipments</div><div class="page-sub">Daily USPS pickup records</div></div>
+    <div>
+      <div class="page-title">Inventory Forecast</div>
+      <div class="page-sub">Stock runway · reorder timing · velocity analysis</div>
+    </div>
+    <div class="header-right">
+      <div class="btn-icon" onclick="renderForecast()" title="Refresh forecast">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      </div>
+    </div>
   </div>
-  <div class="date-bar">
-    <button class="date-btn" onclick="setRange('today',this,'shipments')">Today</button>
-    <button class="date-btn" onclick="setRange('yesterday',this,'shipments')">Yesterday</button>
-    <button class="date-btn" onclick="setRange('7d',this,'shipments')">7 Days</button>
-    <button class="date-btn" onclick="setRange('14d',this,'shipments')">14 Days</button>
-    <button class="date-btn" onclick="setRange('30d',this,'shipments')">30 Days</button>
-    <button class="date-btn" onclick="setRange('last_month',this,'shipments')">Last Month</button>
-    <button class="date-btn" onclick="setRange('6m',this,'shipments')">6 Months</button>
-    <button class="date-btn" onclick="setRange('12m',this,'shipments')">12 Months</button>
-    <button class="date-btn active" onclick="setRange('alltime',this,'shipments')">All Time</button>
+
+  <!-- Forecast assumption bar -->
+  <div style="display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 18px;margin-bottom:18px;font-size:12px;flex-wrap:wrap;">
+    <span style="color:var(--muted)">Lead time:</span>
+    <select id="fc-lead-time" onchange="renderForecast()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--text);font-family:var(--font-head);">
+      <option value="7">7 days</option>
+      <option value="10" selected>10 days (1-2 weeks)</option>
+      <option value="14">14 days</option>
+      <option value="21">21 days</option>
+    </select>
+    <span style="color:var(--muted);margin-left:8px">Reorder buffer:</span>
+    <select id="fc-buffer" onchange="renderForecast()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--text);font-family:var(--font-head);">
+      <option value="7">7 days</option>
+      <option value="14">14 days</option>
+      <option value="21" selected>21 days (conservative)</option>
+      <option value="30">30 days</option>
+    </select>
+    <span style="color:var(--muted);margin-left:8px">Velocity based on:</span>
+    <select id="fc-velocity" onchange="renderForecast()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--text);font-family:var(--font-head);">
+      <option value="7">Last 7 days</option>
+      <option value="30" selected>Last 30 days</option>
+    </select>
+    <span style="color:var(--muted);font-size:11px;margin-left:auto">Auto-calculated from your live stock data</span>
   </div>
-  <div class="stat-row" id="ship-stat-row"></div>
+
+  <!-- SKU Forecast Cards -->
+  <div id="forecast-cards" style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:18px;"></div>
+
+  <!-- Forecast Table -->
   <div class="card">
-    <div class="card-header"><div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Shipment Batches by Day</div><div class="card-meta" id="ship-meta">this period</div></div>
-    <div id="shipments-list"></div>
+    <div class="card-header">
+      <div class="card-title"><div class="card-dot" style="background:var(--accent)"></div>Full Forecast Summary</div>
+      <div class="card-meta">all SKUs · adjustable assumptions</div>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>On Hand</th>
+          <th>Daily Rate</th>
+          <th>Days Left</th>
+          <th>Stock Out Date</th>
+          <th>Order By Date</th>
+          <th>Suggested Order Qty</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="forecast-tbody"></tbody>
+    </table>
   </div>
 </div>
 
@@ -660,7 +702,7 @@ function goTo(page, navEl) {
   navEl.classList.add('active');
   if(page==='orders') renderOrdersPage();
   if(page==='inventory') renderInventory();
-  if(page==='shipments') renderShipments();
+  if(page==='forecast') renderForecast();
   if(page==='reports') renderReports();
   if(page==='sku') renderSKUPerf();
   if(page==='billing') renderBilling();
@@ -1038,6 +1080,142 @@ function renderSKUPerf() {
     const col=skuColor(name,i), avgRate=s.rates.length>0?s.rates.reduce((a,b)=>a+b,0)/s.rates.length:0;
     return `<tr><td><span class="pill" style="background:${col}18;color:${col}">${name}</span></td><td class="mono">${fmt(s.orders)}</td><td class="mono">${fmt(s.qty)}</td><td class="mono">${fmtM(s.charges)}</td><td class="mono">${fmtM(avgRate)}</td><td class="mono" style="color:var(--red)">${fmtM(s.misc)}</td><td class="mono" style="color:var(--muted)">${Math.round(s.orders/total*100)}%</td></tr>`;
   }).join('')||'<tr><td colspan="7" class="empty">No data in this period</td></tr>';
+}
+
+// ══════════════════════════════════════════════════
+// FORECAST PAGE
+// ══════════════════════════════════════════════════
+function renderForecast() {
+  if (!stockData.length) {
+    document.getElementById('forecast-cards').innerHTML = '<div class="empty">Loading stock data...</div>';
+    return;
+  }
+
+  const leadTime = parseInt(document.getElementById('fc-lead-time')?.value || '10');
+  const buffer   = parseInt(document.getElementById('fc-buffer')?.value || '21');
+  const velDays  = parseInt(document.getElementById('fc-velocity')?.value || '30');
+  const today    = new Date();
+
+  // Build forecast per SKU
+  const forecasts = stockData.map(s => {
+    const onHand    = parseNum(String(s['On Hand']||'0'));
+    const out7      = parseNum(String(s['Last 7 Days Out']||'0'));
+    const out30     = parseNum(String(s['Last 30 Days Out']||'0'));
+    const name      = s['SKU'] || s['Title'] || 'Unknown';
+    const reorder   = parseNum(String(s['Reorder Point']||'0'));
+
+    // Daily sell rate based on selected velocity window
+    const dailyRate = velDays === 7 ? out7 / 7 : out30 / 30;
+    const daysLeft  = dailyRate > 0 ? Math.floor(onHand / dailyRate) : 999;
+
+    // Stock out date
+    const stockOutDate = new Date(today);
+    stockOutDate.setDate(stockOutDate.getDate() + daysLeft);
+
+    // Order by date = stock out - lead time - buffer
+    const orderByDate = new Date(stockOutDate);
+    orderByDate.setDate(orderByDate.getDate() - leadTime - buffer);
+
+    // Days until order needed
+    const daysUntilOrder = Math.floor((orderByDate - today) / (1000 * 60 * 60 * 24));
+
+    // Suggested order: 45 days of supply at current rate
+    const suggestedQty = Math.ceil(dailyRate * 45);
+
+    // Status
+    let status, statusClass, urgency;
+    if (onHand <= 0) {
+      status = 'OUT OF STOCK'; statusClass = 'alert-danger'; urgency = 0;
+    } else if (daysUntilOrder <= 0) {
+      status = 'ORDER NOW'; statusClass = 'alert-danger'; urgency = 1;
+    } else if (daysUntilOrder <= 7) {
+      status = 'ORDER THIS WEEK'; statusClass = 'alert-warn'; urgency = 2;
+    } else if (daysUntilOrder <= 14) {
+      status = 'ORDER SOON'; statusClass = 'alert-warn'; urgency = 3;
+    } else {
+      status = 'HEALTHY'; statusClass = 'alert-ok'; urgency = 4;
+    }
+
+    return { name, onHand, dailyRate, daysLeft, stockOutDate, orderByDate,
+             daysUntilOrder, suggestedQty, status, statusClass, urgency, reorder };
+  }).sort((a,b) => a.urgency - b.urgency);
+
+  const fmtDt = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const fmtRate = r => r > 0 ? r.toFixed(1) : '0';
+  const pct = (days, max=90) => Math.min(Math.round(days/max*100), 100);
+
+  // Cards
+  document.getElementById('forecast-cards').innerHTML = forecasts.map(f => {
+    const barColor = f.urgency <= 1 ? 'var(--red)' : f.urgency <= 3 ? 'var(--yellow)' : 'var(--green)';
+    const barWidth = f.onHand <= 0 ? 0 : pct(f.daysLeft);
+    const icon = CONFIG.skuIcons[f.name] || '📦';
+    return `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:24px">${icon}</div>
+          <div>
+            <div style="font-size:14px;font-weight:700">${f.name}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${fmt(f.onHand)} units on hand · ${fmtRate(f.dailyRate)}/day sell rate</div>
+          </div>
+        </div>
+        <span class="inv-alert ${f.statusClass}">${f.status}</span>
+      </div>
+
+      <!-- Runway bar -->
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;">
+          <span>Stock runway</span>
+          <span style="color:${barColor};font-weight:600">${f.daysLeft >= 999 ? '∞' : f.daysLeft} days remaining</span>
+        </div>
+        <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${barWidth}%;background:${barColor};border-radius:4px;transition:width 0.8s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Key dates -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Stock Out</div>
+          <div style="font-size:13px;font-weight:700;font-family:var(--font-mono);color:${f.urgency<=1?'var(--red)':'var(--text)'}">${f.daysLeft >= 999 ? 'No risk' : fmtDt(f.stockOutDate)}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Order By</div>
+          <div style="font-size:13px;font-weight:700;font-family:var(--font-mono);color:${f.daysUntilOrder<=7?'var(--yellow)':'var(--text)'}">${f.daysLeft >= 999 ? 'No rush' : fmtDt(f.orderByDate)}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Order Qty</div>
+          <div style="font-size:13px;font-weight:700;font-family:var(--font-mono);color:var(--accent)">${fmt(f.suggestedQty)} units</div>
+        </div>
+      </div>
+
+      ${f.daysUntilOrder <= 0 && f.onHand > 0 ? `
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:12px;color:var(--red);">
+        ⚠ Order window has passed — place restock order immediately to avoid stockout on ${fmtDt(f.stockOutDate)}
+      </div>` : ''}
+
+      ${f.daysUntilOrder > 0 && f.daysUntilOrder <= 14 ? `
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;font-size:12px;color:var(--yellow);">
+        📦 Place restock order within ${f.daysUntilOrder} days to maintain buffer stock
+      </div>` : ''}
+    </div>`;
+  }).join('');
+
+  // Table
+  document.getElementById('forecast-tbody').innerHTML = forecasts.map(f => {
+    const statusColors = { 'OUT OF STOCK':'var(--red)', 'ORDER NOW':'var(--red)', 'ORDER THIS WEEK':'var(--yellow)', 'ORDER SOON':'var(--yellow)', 'HEALTHY':'var(--green)' };
+    const col = statusColors[f.status] || 'var(--muted)';
+    return `<tr>
+      <td style="font-weight:600">${f.name}</td>
+      <td class="mono">${fmt(f.onHand)}</td>
+      <td class="mono">${fmtRate(f.dailyRate)}/day</td>
+      <td class="mono" style="color:${f.daysLeft<30?'var(--red)':f.daysLeft<60?'var(--yellow)':'var(--green)'}">${f.daysLeft >= 999 ? '∞' : f.daysLeft}</td>
+      <td class="mono" style="color:var(--muted)">${f.daysLeft >= 999 ? '—' : f.stockOutDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+      <td class="mono" style="color:${f.daysUntilOrder<=7?'var(--yellow)':'var(--muted)'}">${f.daysLeft >= 999 ? '—' : f.orderByDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+      <td class="mono" style="color:var(--accent)">${fmt(f.suggestedQty)}</td>
+      <td><span class="inv-alert ${f.statusClass}">${f.status}</span></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" class="empty">No stock data available</td></tr>';
 }
 
 // ══════════════════════════════════════════════════
