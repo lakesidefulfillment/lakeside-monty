@@ -23,7 +23,7 @@ function fetchURL(url, timeoutMs = 25000) {
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
           clearTimeout(timer);
-          resolve({ ok: res.statusCode < 400, status: res.statusCode, body: data.substring(0, 500) });
+          resolve({ ok: res.statusCode < 400, status: res.statusCode, body: data });
         });
       }).on('error', (e) => { clearTimeout(timer); resolve({ ok: false, error: e.message }); });
     };
