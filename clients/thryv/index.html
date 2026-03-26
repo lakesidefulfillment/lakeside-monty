@@ -340,6 +340,10 @@ function parseOrderDate(raw) {
   if (!isNaN(num) && num > 40000 && num < 60000) {
     return new Date(Math.round((num - 25569) * 86400 * 1000));
   }
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(str)) {
+    const [m, d, y] = str.split('/');
+    return new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+  }
   const d = new Date(str);
   return isNaN(d.getTime()) ? null : d;
 }
