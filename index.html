@@ -917,7 +917,7 @@ function renderInventory() {
   const rawDate=r['Date']||r.date||'';
   const dispDate=rawDate&&rawDate.includes('T')?new Date(rawDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):rawDate;
   return `<tr><td class="mono" style="color:var(--muted)">${dispDate||'—'}</td><td>${r['SKU']||r.sku||'—'}</td><td class="mono">${r['Qty In']||r.qty_in||'—'}</td><td style="font-size:11px;color:var(--muted)">${r['PO / Tracking']||r.notes||'—'}</td></tr>`;
-})).join(''):'<tr><td colspan="4" class="empty">No inbound data</td></tr>';
+}).join(''):'<tr><td colspan="4" class="empty">No inbound data</td></tr>';
 }
 
 // ══════════════════════════════════════════════════
