@@ -1,15 +1,14 @@
 // ============================================================
 // LAKESIDE FULFILLMENT — Netlify Function: /api/data
-// Hardened version — validates shape, surfaces real errors
+// Multi-client: pass ?client=monty or ?client=thryv
 // ============================================================
 
-const https = require('https');
 const { STOCK_COLS, INBOUND_COLS } = require('./config');
 
-const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL ||
-  'https://script.google.com/macros/s/AKfycbwQP-IrLKgaoNbU7nQFMoQ1fMnAw70JaQdklbw20ZLVm1oAVBpIdY-NfgcTcHFKEGGN2w/exec';
-
-const ORDERS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6J6k1mNgNeyCPtP-f30ARDrGVNUEBc-vLhhNSORj1lqT-G-k69ixZS58teHi6czLEJxJiyuiQWmHa/pub?gid=205851154&single=true&output=csv';
+const CLIENTS = {
+  monty: require('./clients/monty'),
+  thryv: require('./clients/thryv'),
+};
 
 function fetchURL(url) {
   return new Promise((resolve, reject) => {
@@ -67,21 +66,39 @@ function validateAppsData(data) {
   return errors;
 }
 
-exports.handler = async function(event, context) {
+exports.handler = async function(event) {
   const warnings = [];
+  const clientId = (event.queryStringParameters && event.queryStringParameters.client) || 'monty';
+  const client = CLIENTS[clientId];
+
+  if (!client) {
+    return {
+      statusCode: 400,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: `Unknown client: ${clientId}`, _healthy: false }),
+    };
+  }
+
+  if (!client.APPS_SCRIPT_URL) {
+    return {
+      statusCode: 503,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: `Apps Script URL not configured for ${clientId}`, _healthy: false }),
+    };
+  }
 
   try {
     const [appsResult, ordersResult] = await Promise.all([
-      fetchURL(APPS_SCRIPT_URL),
-      fetchURL(ORDERS_URL),
+      fetchURL(client.APPS_SCRIPT_URL),
+      fetchURL(client.ORDERS_URL),
     ]);
 
-    // --- Parse Apps Script ---
+    // Parse Apps Script
     let appsData = {};
     try {
       const jsonMatch = appsResult.body.match(/\{[\s\S]*\}/);
       if (jsonMatch) appsData = JSON.parse(jsonMatch[0]);
-      else throw new Error('No JSON found in Apps Script response');
+      else throw new Error('No JSON in Apps Script response');
     } catch(e) {
       return {
         statusCode: 502,
@@ -90,19 +107,18 @@ exports.handler = async function(event, context) {
       };
     }
 
-    // --- Validate Apps Script data shape ---
     const validationErrors = validateAppsData(appsData);
     if (validationErrors.length > 0) {
       return {
         statusCode: 422,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: 'Data validation failed', details: validationErrors, _healthy: false }),
+        body: JSON.stringify({ error: 'Validation failed', details: validationErrors, _healthy: false }),
       };
     }
 
     const apiData = {};
     Object.entries(appsData).forEach(([k, v]) => {
-      if (k !== 'stock' && k !== 'inbound' && k !== '_schemaVersion' && k !== '_timestamp') {
+      if (!['stock', 'inbound', '_schemaVersion', '_timestamp'].includes(k)) {
         apiData[k] = typeof v === 'number' ? v : parseNum(String(v || ''));
       }
     });
@@ -110,7 +126,7 @@ exports.handler = async function(event, context) {
     const stock = appsData.stock || [];
     const inbound = appsData.inbound || [];
 
-    // --- Parse Orders CSV ---
+    // Parse Orders CSV
     let orders = [];
     if (ordersResult.body && !ordersResult.body.includes('<!DOCTYPE')) {
       try {
@@ -133,11 +149,20 @@ exports.handler = async function(event, context) {
         'Access-Control-Allow-Origin': '*',
         'Cache-Control': 'public, max-age=60',
       },
-      body: JSON.stringify({ apiData, stock, inbound, orders, _healthy: true, warnings }),
+      body: JSON.stringify({
+        clientId,
+        clientName: client.CLIENT_NAME,
+        apiData,
+        stock,
+        inbound,
+        orders,
+        billing: client.BILLING,
+        _healthy: true,
+        warnings,
+      }),
     };
 
   } catch (err) {
-    console.error('Function error:', err);
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
