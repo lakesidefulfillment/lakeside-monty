@@ -420,7 +420,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
     <div class="kpi" style="--kpi-color:var(--accent)"><div class="kpi-label">Total Orders</div><div class="kpi-value" id="kpi-orders">—</div><div class="kpi-sub flat">this period</div></div>
     <div class="kpi" style="--kpi-color:var(--green)"><div class="kpi-label">Units Shipped</div><div class="kpi-value" id="kpi-units">—</div><div class="kpi-sub up">units out</div></div>
     <div class="kpi" style="--kpi-color:var(--yellow)"><div class="kpi-label">Revenue</div><div class="kpi-value" id="kpi-rev">—</div><div class="kpi-sub up">total charges</div></div>
-    <div class="kpi" style="--kpi-color:var(--purple)"><div class="kpi-label">Avg Rate / Unit</div><div class="kpi-value" id="kpi-avg">—</div><div class="kpi-sub flat">per unit</div></div>
+    <div class="kpi" style="--kpi-color:var(--purple)"><div class="kpi-label">Avg Rate / Order</div><div class="kpi-value" id="kpi-avg">—</div><div class="kpi-sub flat">per order</div></div>
     <div class="kpi" style="--kpi-color:var(--red)"><div class="kpi-label">Amount Due</div><div class="kpi-value" id="kpi-due">—</div><div class="kpi-sub warn">outstanding</div></div>
   </div>
   <div class="row2">
@@ -874,7 +874,7 @@ function renderDashboard() {
   const totalOrders = apiData[keys.orders] || 0;
   const totalRev = apiData[keys.revenue] || 0;
   const totalUnits = apiData[keys.units] || 0;
-  const avgRate = totalUnits > 0 ? totalRev / totalUnits : 0;
+  const avgRate = totalOrders > 0 ? totalRev / totalOrders : 0;
 
   document.getElementById('kpi-orders').textContent=fmt(totalOrders);
   document.getElementById('kpi-units').textContent=fmt(totalUnits);
