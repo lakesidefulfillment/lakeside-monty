@@ -359,7 +359,7 @@ function filterOrders(orders, filter) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   return orders.filter(o => {
-    const d = parseOrderDate(o.Date || o.date);
+    const d = parseOrderDate(o.Date || o.date || o.DATE);
     if (!d) return filter === 'all';
     const dDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     if (filter === 'today') return dDay.getTime() === today.getTime();
