@@ -134,7 +134,7 @@ exports.handler = async function(event) {
         const ordersHeaders = ordersRows[0].map(h => clean(h));
         orders = ordersRows.slice(1).map(row => {
           const o = {}; ordersHeaders.forEach((h, i) => o[h] = clean(row[i] || '')); return o;
-        }).filter(r => r.Date || r.date);
+}).filter(r => r.Date || r.date || r.DATE);
       } catch(e) {
         warnings.push('Orders CSV parse failed: ' + e.message);
       }
