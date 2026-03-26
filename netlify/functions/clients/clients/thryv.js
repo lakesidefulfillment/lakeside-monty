@@ -1,7 +1,7 @@
 module.exports = {
   CLIENT_ID: 'thryv',
   CLIENT_NAME: 'Thryv',
-  APPS_SCRIPT_URL: '',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxn5G7GvS2Y-yu4KSAg5mjL2A8TXK7kUFNJRE4SPPhpKzDWaFjPlYSF4hL2sBIU3U_4/exec',
   ORDERS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcT2liH-YDQIpCjmI2k1xydzYqD7RY5--NlacuhiK35nwqFv-r7boRyl5sOcL2ByQDGRsQbYePz0v3/pub?gid=1567180495&single=true&output=csv',
   BILLING: {
     BASE_RATE: 1.00,
