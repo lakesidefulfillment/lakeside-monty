@@ -689,8 +689,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-head);min-hei
 const CONFIG = {
   clientName: 'Monty Supplements',
   sheetId: '1iIind4E2EHljYxroGMFXivuzJItFQa4TzjW3SKJaSpo',
-  skuColors: { 'Kids Toxin Detox':'#3b82f6','BREATHEASE':'#06d6a0','Breathease':'#06d6a0','TOXIN STRAWBERRY LEM':'#f59e0b','Toxin Strawberry Lem':'#f59e0b' },
-  skuIcons:  { 'Kids Toxin Detox':'🧒','BREATHEASE':'🫁','Breathease':'🫁','TOXIN STRAWBERRY LEM':'🍓','Toxin Strawberry Lem':'🍓' },
+  skuColors: { 'Kids Toxin Detox':'#4ade80','BREATHEASE':'#29b6e8','Breathease':'#29b6e8','TOXIN STRAWBERRY LEM':'#f472b6','Toxin Strawberry Lem':'#f472b6','TOXIN WHITE PEACH':'#fb923c','Toxin White Peach':'#fb923c' },
+  skuIcons:  { 'Kids Toxin Detox':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img2.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','BREATHEASE':'<img src="https://www.montysupps.com/cdn/shop/files/be1x.png?v=1761578368" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','Breathease':'<img src="https://www.montysupps.com/cdn/shop/files/be1x.png?v=1761578368" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','TOXIN STRAWBERRY LEM':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','Toxin Strawberry Lem':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">','TOXIN WHITE PEACH':'<img src="https://www.montysupps.com/cdn/shop/files/product_our_img1.webp?v=1751871046" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">' },
 };
 const SKU_COLORS_FALLBACK = ['#3b82f6','#06d6a0','#f59e0b','#f472b6','#a78bfa','#34d399'];
 
@@ -874,7 +874,7 @@ function renderDashboard() {
   const totalOrders = apiData[keys.orders] || 0;
   const totalRev = apiData[keys.revenue] || 0;
   const totalUnits = apiData[keys.units] || 0;
-  const avgRate = totalOrders > 0 ? totalRev / totalOrders : 0;
+  const avgRate = 1.00; // Monty flat rate $1.00 per order
 
   document.getElementById('kpi-orders').textContent=fmt(totalOrders);
   document.getElementById('kpi-units').textContent=fmt(totalUnits);
@@ -906,7 +906,7 @@ function renderDashboard() {
 
   // SKU grid from pre-computed API tab values
   const skuData = [
-    { name:'Kids Toxin Detox',    orders:apiData.sku_kids_orders_30d||0,      charges:apiData.sku_kids_revenue_30d||0,      color:'#3b82f6' },
+    { name:'Kids Toxin Detox',    orders:apiData.sku_kids_orders_30d||0,      charges:apiData.sku_kids_revenue_30d||0,      color:'#4ade80' },
     { name:'BREATHEASE',          orders:apiData.sku_breathease_orders_30d||0, charges:apiData.sku_breathease_revenue_30d||0, color:'#06d6a0' },
     { name:'TOXIN STRAWBERRY LEM',orders:apiData.sku_toxin_orders_30d||0,      charges:apiData.sku_toxin_revenue_30d||0,      color:'#f59e0b' },
   ].filter(s=>s.orders>0);
@@ -972,7 +972,7 @@ function renderInvList(targetId) {
     if(stock<=0){ac='alert-danger';at='Out of Stock';}
     else if(belowReorder||stock<threshold){ac='alert-warn';at='Low Stock';}
     const col=stock<=0?'var(--red)':stock<threshold?'var(--yellow)':'var(--green)';
-    return `<div class="inv-item"><div class="inv-left"><div class="inv-icon">${icon}</div><div><div class="inv-sku">${name}</div><div class="inv-sub">on hand · reorder @ ${fmt(threshold)}</div><div class="inv-alert ${ac}">${at}</div></div></div><div><div class="inv-count" style="color:${col}">${fmt(stock)}</div><div class="inv-units">units</div></div></div>`;
+    return `<div class="inv-item"><div class="inv-left"><div class="inv-icon" style="width:36px;height:36px;overflow:hidden;">${icon}</div><div><div class="inv-sku">${name}</div><div class="inv-sub">on hand · reorder @ ${fmt(threshold)}</div><div class="inv-alert ${ac}">${at}</div></div></div><div><div class="inv-count" style="color:${col}">${fmt(stock)}</div><div class="inv-units">units</div></div></div>`;
   }).join('');
 }
 
