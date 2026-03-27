@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "https://thryv.lakesidefulfillment.com/*"
+  to = "/clients/thryv/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://monty.lakesidefulfillment.com/*"
+  to = "/:splat"
+  status = 200
+  force = true
