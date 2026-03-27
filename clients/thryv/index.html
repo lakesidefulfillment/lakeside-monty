@@ -376,7 +376,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 </main>
 <script>
 const DATA_URL='/.netlify/functions/data?client=thryv';
-const SKU_IMAGES={'WATERMELON':'https://thryvsupps.com/cdn/shop/files/watermelon_thumb_1.webp?v=1752501843','PINK LEMONADE':'https://thryvsupps.com/cdn/shop/files/pink_thumb_2ad874f1-c9c4-456b-8e2a-f2b47b359b20.webp?v=1752500940','NITEBITZS':'https://thryvsupps.com/cdn/shop/files/nitebitzzz-4694992.jpg?v=1771394749'};
+const SKU_IMAGES = {
+  'WATERMELON':'/watermelon.jpg',
+  'PINK LEMONADE':'/pink-lemonade.jpg',
+  'NITEBITZS':'https://thryvsupps.com/cdn/shop/files/nitebitzzz-4694992.jpg?v=1771394749',
+};
 const SKU_CSS={'WATERMELON':'watermelon','PINK LEMONADE':'pink','NITEBITZS':'nite'};
 const CH_COLORS={'Shopify':'#22c55e','Tik Tok Shop':'#f43f5e','TikTok Shop':'#f43f5e','Amazon':'#f59e0b','default':'#6b6b78'};
 let appData=null,currentFilter='30d',ordersFilter='30d',reportsFilter='all',skupFilter='today';
