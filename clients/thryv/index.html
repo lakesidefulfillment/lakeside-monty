@@ -230,20 +230,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     <button class="tf-btn" onclick="setOrdersFilter('all',this)">All Time</button>
   </div>
   <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-    <input id="order-search" type="text" placeholder="Search order ID, SKU..." oninput="renderOrders(appData)" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;">
-    <select id="order-sku-filter" onchange="renderOrders(appData)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer">
+    <input id="order-search" type="text" placeholder="Search order ID, SKU..." oninput="if(appData)renderOrdersTable(appData)" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;">
+    <select id="order-sku-filter" onchange="if(appData)renderOrdersTable(appData)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer">
       <option value="">All SKUs</option>
       <option value="WATERMELON">Watermelon</option>
       <option value="PINK LEMONADE">Pink Lemonade</option>
       <option value="NITEBITZS">Nitebitzs</option>
     </select>
-    <select id="order-channel-filter" onchange="renderOrders(appData)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer">
+    <select id="order-channel-filter" onchange="if(appData)renderOrdersTable(appData)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer">
       <option value="">All Channels</option>
       <option value="Shopify">Shopify</option>
       <option value="Tik Tok Shop">Tik Tok Shop</option>
       <option value="Amazon">Amazon</option>
     </select>
-    <select id="order-prep-filter" onchange="renderOrders(appData)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer">
+    <select id="order-prep-filter" onchange="if(appData)renderOrdersTable(appData)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);cursor:pointer">
       <option value="">All Prep Types</option>
       <option value="Poly Mailer">Poly Mailer</option>
       <option value="Box">Box</option>
@@ -376,11 +376,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 </main>
 <script>
 const DATA_URL='/.netlify/functions/data?client=thryv';
-const SKU_IMAGES = {
-  'WATERMELON':'https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/watermelon.jpg',
-  'PINK LEMONADE':'https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/pink-lemonade.jpg',
-  'NITEBITZS':'https://thryvsupps.com/cdn/shop/files/nitebitzzz-4694992.jpg?v=1771394749',
-};
+const SKU_IMAGES={'WATERMELON':'https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/watermelon.jpg','PINK LEMONADE':'https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/pink-lemonade.jpg','NITEBITZS':'https://thryvsupps.com/cdn/shop/files/nitebitzzz-4694992.jpg?v=1771394749'};
 const SKU_CSS={'WATERMELON':'watermelon','PINK LEMONADE':'pink','NITEBITZS':'nite'};
 const CH_COLORS={'Shopify':'#22c55e','Tik Tok Shop':'#f43f5e','TikTok Shop':'#f43f5e','Amazon':'#f59e0b','default':'#6b6b78'};
 let appData=null,currentFilter='30d',ordersFilter='30d',reportsFilter='all',skupFilter='today';
