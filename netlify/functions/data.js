@@ -8,6 +8,7 @@ const { STOCK_COLS, INBOUND_COLS } = require('./config');
 const CLIENTS = {
   monty: require('./clients/monty'),
   thryv: require('./clients/thryv'),
+  gleaux: require('./clients/gleaux'),
 };
 
 function fetchURL(url) {
