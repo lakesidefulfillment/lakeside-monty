@@ -552,7 +552,7 @@ async function loadData() {
   document.getElementById('loading').classList.remove('hidden');
   document.getElementById('loading-text').textContent = 'Loading dashboard...';
   try {
-    const res = await fetch('/.netlify/functions/data');
+    const res = await fetch('/.netlify/functions/data?client=gleaux');
     if (!res.ok) throw new Error('Server error: ' + res.status);
     const json = await res.json();
 
