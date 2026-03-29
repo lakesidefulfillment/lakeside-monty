@@ -362,13 +362,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 </main>
 <script>
 const DATA_URL='/.netlify/functions/data?client=gleaux';
-const SKU_IMG='https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/clients/gleaux/gleaux-product.png';
+const ICON="🍬";
+const SKU_IMG="https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/clients/gleaux/gleaux-product.png";
 const CH_COLORS={'Shopify':'#22c55e','TikTok Shop':'#f43f5e','Tik Tok Shop':'#f43f5e','Amazon':'#f59e0b','default':'#6b6b78'};
 let appData=null,currentFilter='30d',ordersFilter='30d',reportsFilter='all',skupFilter='today';
 let ordersChart=null,channelChart=null;
 const fmt$=n=>'$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtN=n=>Number(n||0).toLocaleString();
-function icon(){return '<img src="'+SKU_IMG+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.background=\'#2a2a3a\'" alt="">';}
+function icon(){return '<img src="'+SKU_IMG+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.background='#2a2a3a'" alt="">';}
 function parseOrderDate(raw){
   if(!raw)return null;
   const str=String(raw).trim();
@@ -463,7 +464,7 @@ function renderDashboard(data){
   const invCards=stock.map(s=>{const oh=parseFloat(s['On Hand']||0),rp=parseFloat(s['Reorder Point']||0);
     let status='good',badge='IN STOCK';if(oh<=0){status='out';badge='OUT OF STOCK';}else if(rp&&oh<=rp){status='low';badge='LOW STOCK';}
     return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">'+
-    '<div style="width:36px;height:36px;border-radius:7px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+ICON+'</div>'+
+    '<div style="width:36px;height:36px;border-radius:7px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><img src="'+SKU_IMG+'" style="width:28px;height:28px;border-radius:5px;object-fit:cover" onerror="this.outerHTML='<span>🍬</span>'"></div>'+
     '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+s.SKU+'</div>'+
     '<div style="font-size:11px;color:var(--muted);margin-top:2px">reorder @ '+fmtN(rp)+'</div></div>'+
     '<div style="text-align:right"><div style="font-size:18px;font-weight:700;font-family:DM Mono,monospace" class="'+status+'">'+fmtN(Math.max(0,oh))+'</div>'+
@@ -540,7 +541,7 @@ function renderInventory(data){
     const maxStock=parseFloat(s['Total In']||oh)||1,pct=Math.min(100,Math.max(0,oh/maxStock*100));
     const barColor=status==='good'?'var(--green)':status==='low'?'var(--yellow)':'var(--red)';
     return '<div class="inv-sku-card"><div class="inv-sku-header"><div class="inv-sku-left">'+
-    '<div style="width:44px;height:44px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">'+ICON+'</div>'+
+    '<div style="width:44px;height:44px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0"><img src="'+SKU_IMG+'" style="width:36px;height:36px;border-radius:7px;object-fit:cover" onerror="this.outerHTML='<span>🍬</span>'"></div>'+
     '<div><div class="inv-sku-name">'+s.SKU+'</div><div class="inv-sku-vel">7d out: '+fmtN(vel7)+' - 30d out: '+fmtN(vel30)+' - reorder @ '+fmtN(rp)+'</div></div></div>'+
     '<div style="text-align:right"><div class="inv-sku-qty '+status+'">'+fmtN(Math.max(0,oh))+'</div><span class="inv-badge '+status+'">'+badge+'</span></div></div>'+
     '<div class="inv-bar-bg"><div class="inv-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div>'+
@@ -594,7 +595,7 @@ function renderForecast(data){
   });
   document.getElementById('forecast-cards').innerHTML=rows.map(r=>
     '<div class="forecast-card"><div class="fc-header"><div class="fc-sku-info">'+
-    '<div style="width:44px;height:44px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:24px">'+ICON+'</div>'+
+    '<div style="width:44px;height:44px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:24px"><img src="'+SKU_IMG+'" style="width:36px;height:36px;border-radius:7px;object-fit:cover" onerror="this.outerHTML='<span>🍬</span>'"></div>'+
     '<div><div class="fc-sku-name">'+r.sku+'</div><div class="fc-sku-sub">'+fmtN(r.oh)+' units on hand - '+r.dailyRate.toFixed(1)+'/day sell rate</div></div></div>'+
     '<span class="fc-status '+r.statusClass+'">'+r.statusText+'</span></div>'+
     '<div class="fc-runway-label"><span>Stock runway</span><span>'+(r.daysLeft>=999?'No stockout risk':r.daysLeft+' days remaining')+'</span></div>'+
@@ -690,7 +691,7 @@ function renderSKUPerf(data){
   const skuMap=buildSKUMap(filtered,billing),totalOrders=filtered.length;
   document.getElementById('skup-cards').innerHTML=stock.map(s=>{const sku=s.SKU.toUpperCase().trim(),st=skuMap[sku]||{orders:0,units:0,revenue:0,misc:0};
     return '<div class="skup-card"><div class="skup-header">'+
-    '<div style="width:46px;height:46px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">'+ICON+'</div>'+
+    '<div style="width:46px;height:46px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0"><img src="'+SKU_IMG+'" style="width:36px;height:36px;border-radius:7px;object-fit:cover" onerror="this.outerHTML='<span>🍬</span>'"></div>'+
     '<div><div class="skup-name">'+s.SKU+'</div><div class="skup-sub">'+fmtN(st.orders)+' orders - '+(labels[skupFilter]||skupFilter)+'</div></div></div>'+
     '<div class="skup-row"><span class="lbl">Qty Out</span><span class="val">'+fmtN(st.units)+'</span></div>'+
     '<div class="skup-row"><span class="lbl">Total Charges</span><span class="val" style="color:var(--green)">'+fmt$(st.revenue)+'</span></div>'+
