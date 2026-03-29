@@ -7,8 +7,12 @@ module.exports = {
     BASE_RATE: 2.50,
     ADDITIONAL_UNIT_RATE: 0.50,
   },
-  calcRate(order) {
-    const qty = parseInt(order['Qty Out'] || order['Units'] || 1);
-    return 2.50 + (Math.max(0, qty - 1) * 0.50);
-  }
-};
+ calcRate(order) {
+  // Use Grand Total from sheet — already includes Misc Cost adjustments
+  const grandTotal = parseFloat(order['Grand Total'] || 0);
+  if (!isNaN(grandTotal)) return grandTotal;
+
+  // Fallback if Grand Total missing
+  const qty = parseInt(order['Qty Out'] || order['Units'] || 1);
+  return 2.50 + (Math.max(0, qty - 1) * 0.50);
+},
