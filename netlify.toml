@@ -15,3 +15,9 @@
   to = "/clients/gleaux/"
   status = 301
   force = true
+
+[[redirects]]
+  from = "https://skp.lakesidefulfillment.com"
+  to = "/clients/skp/"
+  status = 301
+  force = true
