@@ -400,7 +400,7 @@ function filterOrders(orders,filter){
 function getGT(o,billing){
   const gtRaw=String(o['Grand Total']||'').trim();
   const gt=parseFloat(gtRaw.replace(/[$,]/g,''));
-  if(gtRaw!==''&&!isNaN(gt))return gt;
+  function getGT(o,billing){   const gtRaw=String(o['Grand Total']||'').trim();   const gt=parseFloat(gtRaw.replace(/[$,]/g,''));   if(gtRaw!==''&&!isNaN(gt))return gt;  // ← removed &&gt>0   const qty=parseInt(o['Qty Out']||o['Units']||1);   const base=(billing&&billing.BASE_RATE)||2.50;   const extra=(billing&&billing.ADDITIONAL_UNIT_RATE)||0.50;   return base+(Math.max(0,qty-1)*extra); }
   const qty=parseInt(o['Qty Out']||o['Units']||1);
   const base=(billing&&billing.BASE_RATE)||2.50;
   const extra=(billing&&billing.ADDITIONAL_UNIT_RATE)||0.50;
@@ -594,4 +594,119 @@ function renderForecast(data){
   });
   document.getElementById('forecast-cards').innerHTML=rows.map(r=>
     '<div class="forecast-card"><div class="fc-header"><div class="fc-sku-info">'+
-    '<div style="width:44px;height:44px;border-radius:9px;background:'+(SKU_COLORS[(r.sku||'').toUpperCase().trim()]||'rgba(14,116,144,0.2)')+';display:flex;align-items:center;justify-content:
+    '<div style="width:44px;height:44px;border-radius:9px;background:'+(SKU_COLORS[(r.sku||'').toUpperCase().trim()]||'rgba(14,116,144,0.2)')+';display:flex;align-items:center;justify-content:center;font-size:24px">'+(SKU_IMAGES[(r.sku||'').toUpperCase().trim()]?'<img src="'+SKU_IMAGES[(r.sku||'').toUpperCase().trim()]+'" style="width:36px;height:36px;object-fit:cover;border-radius:7px">':'📚')+'</div>'+
+    '<div><div class="fc-sku-name">'+r.sku+'</div><div class="fc-sku-sub">'+fmtN(r.oh)+' units on hand - '+r.dailyRate.toFixed(1)+'/day sell rate</div></div></div>'+
+    '<span class="fc-status '+r.statusClass+'">'+r.statusText+'</span></div>'+
+    '<div class="fc-runway-label"><span>Stock runway</span><span>'+(r.daysLeft>=999?'No stockout risk':r.daysLeft+' days remaining')+'</span></div>'+
+    '<div class="fc-runway-bg"><div class="fc-runway-bar" style="width:'+r.runwayPct+'%;background:'+r.barColor+'"></div></div>'+
+    '<div class="fc-grid">'+
+    '<div class="fc-stat"><div class="fc-stat-label">Stock Out</div><div class="fc-stat-value" style="color:var(--red)">'+(r.stockOutDate?r.stockOutDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'N/A')+'</div></div>'+
+    '<div class="fc-stat"><div class="fc-stat-label">Order By</div><div class="fc-stat-value" style="color:var(--yellow)">'+(r.orderByDate?r.orderByDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'N/A')+'</div></div>'+
+    '<div class="fc-stat"><div class="fc-stat-label">Order Qty</div><div class="fc-stat-value" style="color:var(--blue)">'+fmtN(r.suggestedQty)+' units</div></div>'+
+    '</div>'+(r.daysToOrder<=0&&r.oh>0?'<div class="fc-alert">Order window has passed - place restock order immediately</div>':'')+
+    '</div>'
+  ).join('');
+  document.getElementById('forecast-tbody').innerHTML=rows.map(r=>
+    '<tr><td><strong>'+r.sku+'</strong></td>'+
+    '<td style="font-family:DM Mono,monospace"><span class="'+(r.oh<=0?'out':'')+'">'+fmtN(r.oh)+'</span></td>'+
+    '<td style="font-family:DM Mono,monospace">'+r.dailyRate.toFixed(1)+'/day</td>'+
+    '<td style="font-family:DM Mono,monospace;font-weight:700">'+(r.daysLeft>=999?'No risk':r.daysLeft+' days')+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--red)">'+(r.stockOutDate?r.stockOutDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'N/A')+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--yellow)">'+(r.orderByDate?r.orderByDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'N/A')+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--blue)">'+fmtN(r.suggestedQty)+'</td>'+
+    '<td><span class="fc-status '+r.statusClass+'" style="font-size:11px;padding:3px 10px">'+r.statusText+'</span></td></tr>'
+  ).join('');
+}
+function buildSKUMap(orders,billing){const m={};orders.forEach(o=>{const sku=(o['SKU']||'').toUpperCase().trim();if(!m[sku])m[sku]={orders:0,units:0,revenue:0,misc:0};m[sku].orders++;m[sku].units+=parseInt(o['Qty Out']||o['Units']||1);m[sku].revenue+=getGT(o,billing);m[sku].misc+=parseFloat(String(o['Misc Cost']||'0').replace(/[$,]/g,''));});return m;}
+function buildMonthMap(orders,billing){const m={};orders.forEach(o=>{const d=parseOrderDate(getDate(o));if(!d)return;const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),lbl=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});if(!m[key])m[key]={label:lbl,orders:0,units:0,revenue:0};m[key].orders++;m[key].units+=parseInt(o['Qty Out']||o['Units']||1);m[key].revenue+=getGT(o,billing);});return m;}
+function monthTable(tbody,orders,billing){
+  const mm=buildMonthMap(orders,billing);
+  document.getElementById(tbody).innerHTML=Object.entries(mm).sort((a,b)=>b[0].localeCompare(a[0])).map(([,m])=>
+    '<tr><td style="font-weight:500">'+m.label+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(m.orders)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(m.units)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;font-weight:600">'+fmt$(m.revenue)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--muted)">'+fmt$(m.orders?m.revenue/m.orders:0)+'</td></tr>'
+  ).join('')||'<tr><td colspan="5" class="empty-state">No data</td></tr>';
+}
+function renderReports(data){
+  const{orders,billing}=data;
+  const filtered=filterOrders(orders,reportsFilter);
+  const totalOrders=filtered.length,totalUnits=filtered.reduce((s,o)=>s+parseInt(o['Qty Out']||o['Units']||1),0);
+  const totalRev=filtered.reduce((s,o)=>s+getGT(o,billing),0);
+  const dates=filtered.map(o=>parseOrderDate(getDate(o))).filter(Boolean);
+  const daySpan=dates.length>1?Math.max(1,Math.ceil((Math.max(...dates)-Math.min(...dates))/864e5)):1;
+  document.getElementById('rpt-orders').textContent=fmtN(totalOrders);
+  document.getElementById('rpt-units').textContent=fmtN(totalUnits);
+  document.getElementById('rpt-revenue').textContent=fmt$(totalRev);
+  document.getElementById('rpt-avgday').textContent=fmtN(Math.round(totalOrders/daySpan));
+  const dayMap={};filtered.forEach(o=>{const d=parseOrderDate(getDate(o));if(!d)return;const key=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});dayMap[key]=(dayMap[key]||0)+1;});
+  const dayEntries=Object.entries(dayMap).slice(-30);
+  if(ordersChart)ordersChart.destroy();
+  ordersChart=new Chart(document.getElementById('orders-chart').getContext('2d'),{type:'bar',data:{labels:dayEntries.map(e=>e[0]),datasets:[{data:dayEntries.map(e=>e[1]),backgroundColor:'#f59e0b',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b6b78',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#6b6b78',font:{size:10}},grid:{color:'#242428'}}}}});
+  const chMap={};filtered.forEach(o=>{const ch=o['Channel']||'Unknown';chMap[ch]=(chMap[ch]||0)+1;});
+  const chEntries=Object.entries(chMap).sort((a,b)=>b[1]-a[1]);
+  if(channelChart)channelChart.destroy();
+  channelChart=new Chart(document.getElementById('channel-chart').getContext('2d'),{type:'doughnut',data:{labels:chEntries.map(e=>e[0]),datasets:[{data:chEntries.map(e=>e[1]),backgroundColor:['#22c55e','#f43f5e','#f59e0b','#3b82f6','#a855f7','#6b6b78'].slice(0,chEntries.length),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#f0f0f2',font:{size:11},padding:12}}}}});
+  const skuMap=buildSKUMap(orders,billing),allRev=Object.values(skuMap).reduce((s,v)=>s+v.revenue,0);
+  document.getElementById('reports-sku-tbody').innerHTML=Object.entries(skuMap).sort((a,b)=>b[1].revenue-a[1].revenue).map(([sku,st])=>
+    '<tr><td><span class="sku-pill">'+sku+'</span></td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(st.orders)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(st.units)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmt$(st.orders?st.revenue/st.orders:0)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;font-weight:600">'+fmt$(st.revenue)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--muted)">'+(allRev?(st.revenue/allRev*100).toFixed(0)+'%':'0%')+'</td></tr>'
+  ).join('');
+  monthTable('reports-monthly-tbody',orders,billing);
+}
+function renderBilling(data){
+  const{orders,apiData,billing}=data;
+  const allRev=orders.reduce((s,o)=>s+getGT(o,billing),0);
+  const totalPaid=parseFloat(String(apiData['total_paid']||0).replace(/[$,]/g,''));
+  const amtDue=parseFloat(String(apiData['amount_due']||0).replace(/[$,]/g,''));
+  const now=new Date();
+  const thisMonthRev=orders.filter(o=>{const d=parseOrderDate(getDate(o));return d&&d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).reduce((s,o)=>s+getGT(o,billing),0);
+  document.getElementById('b-revenue').textContent=fmt$(allRev);
+  document.getElementById('b-paid').textContent=fmt$(totalPaid);
+  document.getElementById('b-due').textContent=fmt$(amtDue);
+  document.getElementById('b-month').textContent=fmt$(thisMonthRev);
+  const skuMap=buildSKUMap(orders,billing),allRevSKU=Object.values(skuMap).reduce((s,v)=>s+v.revenue,0);
+  document.getElementById('billing-sku-tbody').innerHTML=Object.entries(skuMap).sort((a,b)=>b[1].revenue-a[1].revenue).map(([sku,st])=>
+    '<tr><td><span class="sku-pill">'+sku+'</span></td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(st.orders)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(st.units)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmt$(st.orders?st.revenue/st.orders:0)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;font-weight:700">'+fmt$(st.revenue)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--muted)">'+(allRevSKU?(st.revenue/allRevSKU*100).toFixed(0)+'%':'0%')+'</td></tr>'
+  ).join('');
+  monthTable('billing-monthly-tbody',orders,billing);
+}
+function renderSKUPerf(data){
+  if(!data)return;
+  const{orders,stock,billing}=data;
+  const filtered=filterOrders(orders,skupFilter);
+  const labels={today:'today',yesterday:'yesterday','7d':'last 7 days','14d':'last 14 days','30d':'last 30 days',month:'last month','6m':'last 6 months',all:'all time'};
+  document.getElementById('skup-period').textContent=labels[skupFilter]||skupFilter;
+  const skuMap=buildSKUMap(filtered,billing),totalOrders=filtered.length;
+  document.getElementById('skup-cards').innerHTML=stock.map(s=>{const sku=s.SKU.toUpperCase().trim(),st=skuMap[sku]||{orders:0,units:0,revenue:0,misc:0};
+    return '<div class="skup-card"><div class="skup-header">'+
+    '<div style="width:46px;height:46px;border-radius:9px;background:'+(SKU_COLORS[sku]||'rgba(14,116,144,0.2)')+';display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">'+(SKU_IMAGES[sku]?'<img src="'+SKU_IMAGES[sku]+'" style="width:36px;height:36px;object-fit:cover;border-radius:7px">':'📚')+'</div>'+
+    '<div><div class="skup-name">'+s.SKU+'</div><div class="skup-sub">'+fmtN(st.orders)+' orders - '+(labels[skupFilter]||skupFilter)+'</div></div></div>'+
+    '<div class="skup-row"><span class="lbl">Qty Out</span><span class="val">'+fmtN(st.units)+'</span></div>'+
+    '<div class="skup-row"><span class="lbl">Total Charges</span><span class="val" style="color:var(--green)">'+fmt$(st.revenue)+'</span></div>'+
+    '<div class="skup-row"><span class="lbl">Grand Total</span><span class="val" style="color:var(--green)">'+fmt$(st.revenue)+'</span></div></div>';
+  }).join('');
+  document.getElementById('skup-tbody').innerHTML=Object.entries(skuMap).sort((a,b)=>b[1].revenue-a[1].revenue).map(([sku,st])=>
+    '<tr><td><span class="sku-pill">'+sku+'</span></td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(st.orders)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmtN(st.units)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;font-weight:600">'+fmt$(st.revenue)+'</td>'+
+    '<td style="font-family:DM Mono,monospace">'+fmt$(st.orders?st.revenue/st.orders:0)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--muted)">'+fmt$(st.misc)+'</td>'+
+    '<td style="font-family:DM Mono,monospace;color:var(--muted)">'+(totalOrders?(st.orders/totalOrders*100).toFixed(0)+'%':'0%')+'</td></tr>'
+  ).join('')||'<tr><td colspan="7" class="empty-state">No data</td></tr>';
+}
+loadData();
+</script>
+</body>
+</html>
