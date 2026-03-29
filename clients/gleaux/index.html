@@ -726,7 +726,7 @@ function renderInvList(targetId) {
     const threshold=parseNum(String(item['Reorder Point']||'250'))||250;
     const belowReorder=item['Below Reorder?']==='YES';
     const name=item['SKU']||item['Title']||'Unknown';
-    const icon=CONFIG.skuIcons[name]||'🍬';
+    const icon=CONFIG.skuIcons_disabled&&CONFIG.skuIcons_disabled[name]||'🍬';
     let ac='alert-ok',at='In Stock';
     if(stock<=0){ac='alert-danger';at='Out of Stock';}
     else if(belowReorder||stock<threshold){ac='alert-warn';at='Low Stock';}
@@ -791,7 +791,7 @@ function renderInventory(){
     const stock=parseNum(String(item['On Hand']||'0'));
     const threshold=parseNum(String(item['Reorder Point']||'250'))||250;
     const name=item['SKU']||item['Title']||'Unknown';
-    const icon=CONFIG.skuIcons[name]||'🍬';
+    const icon=CONFIG.skuIcons_disabled&&CONFIG.skuIcons_disabled[name]||'🍬';
     let ac='alert-ok',at='In Stock';
     if(stock<=0){ac='alert-danger';at='Out of Stock';}
     else if(item['Below Reorder?']==='YES'||stock<threshold){ac='alert-warn';at='Low Stock';}
