@@ -463,8 +463,8 @@ function renderDashboard(data){
     return '<div class="sku-card"><div class="sku-card-top">'+icon()+'<div><div class="sku-name">'+s.SKU+'</div><div class="sku-orders">'+fmtN(st.orders)+' orders - '+label+'</div></div></div>'+
     '<div class="sku-stat-row"><span class="sku-stat-label">Units Shipped</span><span class="sku-stat-val">'+fmtN(st.units)+'</span></div>'+
     '<div class="sku-stat-row"><span class="sku-stat-label">Total Charges</span><span class="sku-stat-val">'+fmt$(st.revenue)+'</span></div>'+
-    '<hr class="sku-divider"><div class="sku-total"><span style="font-size:11px;color:var(--muted)">Grand Total</span><span class="sku-total-val">'+fmt$(st.revenue)+'</span></div></div>';}).join('')||
-  '<div class="empty-state">No orders in this period</div>'+
+    '<hr class="sku-divider"><div class="sku-total"><span style="font-size:11px;color:var(--muted)">Grand Total</span><span class="sku-total-val">'+fmt$(st.revenue)+'</span></div></div>';}).join('')||'<div class="empty-state">No orders in this period</div>')+
+ 
   '</div></div></div>'+
   '<div class="panel"><div class="panel-header"><span class="panel-title">Inventory</span><span class="panel-meta">Live</span></div><div class="panel-body">'+
   stock.map(s=>{const oh=parseFloat(s['On Hand']||0),rp=parseFloat(s['Reorder Point']||0);
