@@ -362,13 +362,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 </main>
 <script>
 const DATA_URL='/.netlify/functions/data?client=gleaux';
-const ICON='🍬';
+const SKU_IMG='https://raw.githubusercontent.com/lakesidefulfillment/lakeside-monty/main/clients/gleaux/gleaux-product.png';
 const CH_COLORS={'Shopify':'#22c55e','TikTok Shop':'#f43f5e','Tik Tok Shop':'#f43f5e','Amazon':'#f59e0b','default':'#6b6b78'};
 let appData=null,currentFilter='30d',ordersFilter='30d',reportsFilter='all',skupFilter='today';
 let ordersChart=null,channelChart=null;
 const fmt$=n=>'$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtN=n=>Number(n||0).toLocaleString();
-function icon(){return '<div class="sku-icon-box">'+ICON+'</div>';}
+function icon(){return '<img src="'+SKU_IMG+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.background=\'#2a2a3a\'" alt="">';}
 function parseOrderDate(raw){
   if(!raw)return null;
   const str=String(raw).trim();
