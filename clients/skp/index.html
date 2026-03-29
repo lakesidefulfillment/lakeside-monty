@@ -400,7 +400,7 @@ function filterOrders(orders,filter){
 function getGT(o,billing){
   const gtRaw=String(o['Grand Total']||'').trim();
   const gt=parseFloat(gtRaw.replace(/[$,]/g,''));
-  if(gtRaw!==''&&!isNaN(gt)&&gt>0)return gt;
+  function getGT(o,billing){   const gtRaw=String(o['Grand Total']||'').trim();   const gt=parseFloat(gtRaw.replace(/[$,]/g,''));   if(gtRaw!==''&&!isNaN(gt))return gt;  // ← removed &&gt>0   const qty=parseInt(o['Qty Out']||o['Units']||1);   const base=(billing&&billing.BASE_RATE)||2.50;   const extra=(billing&&billing.ADDITIONAL_UNIT_RATE)||0.50;   return base+(Math.max(0,qty-1)*extra); }
   const qty=parseInt(o['Qty Out']||o['Units']||1);
   const base=(billing&&billing.BASE_RATE)||2.50;
   const extra=(billing&&billing.ADDITIONAL_UNIT_RATE)||0.50;
