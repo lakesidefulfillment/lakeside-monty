@@ -1,7 +1,7 @@
 module.exports = {
   CLIENT_ID: 'skp',
   CLIENT_NAME: 'Safe Kids Path',
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz6e_Clj_TK4c6SG-uoMRl4aEIzH1qXC5sG2uR7o0dP54sHdQ12_2KdYr94AogNPgSw/exec',
+  APPS_SCRIPT_URL: https://script.google.com/macros/s/AKfycby3e5WeJ_eQgCJ8p_eRMho7Ao07CUP8-IddUgQ2_Eb9wtVps26rrx-czpDqbTUxW5cbEQ/exec,
   ORDERS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8lGVg0ZElrj_y87JV8HQ_KokGhsEhyLN--ZMwcH201sID_S1E6CabWNZbbSkR2xCzLjrkWe2RMatx/pub?gid=1889515230&single=true&output=csv',
   BILLING: {
     BASE_RATE: 2.50,
