@@ -9,3 +9,9 @@
   to = "/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "https://gleaux.lakesidefulfillment.com"
+  to = "/clients/gleaux/"
+  status = 301
+  force = true
